@@ -1,10 +1,12 @@
-class PostDto {
-  userId: number;
-  id: number;
+import {IPost} from '../../domain/entities/post_entity';
+
+class PostDto implements IPost {
+  userId: string;
+  id: string;
   title: string;
   body: string;
 
-  constructor(userId: number, id: number, title: string, body: string) {
+  constructor(userId: string, id: string, title: string, body: string) {
     this.userId = userId;
     this.id = id;
     this.title = title;
@@ -13,12 +15,7 @@ class PostDto {
 
   // Deserialize from JSON
   static fromJson(json: Record<string, any>): PostDto {
-    return new PostDto(
-      parseInt(json.userId),
-      parseInt(json.id),
-      json.title,
-      json.body,
-    );
+    return new PostDto(json.userId, json.id, json.title, json.body);
   }
 
   // Serialize to JSON
@@ -26,3 +23,4 @@ class PostDto {
     return JSON.stringify(this);
   }
 }
+export default PostDto;

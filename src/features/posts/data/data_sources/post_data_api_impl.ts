@@ -2,6 +2,7 @@ import {AxiosResponse} from 'axios';
 import ApiResponse from '../../../../core/models/api_response';
 import {PostDataSource} from './post_data_source';
 import AxiosOperations from '../../../../core/network/axios/axios_operations';
+import PostDto from '../dto/post_dto';
 
 class PostDataApiImpl implements PostDataSource {
   axiosOperations: AxiosOperations;
@@ -41,3 +42,4 @@ class PostDataApiImpl implements PostDataSource {
     }
   }
 }
+export default PostDataApiImpl;

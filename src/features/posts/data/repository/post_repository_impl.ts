@@ -10,9 +10,12 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async getPosts(): Promise<IPost[]> {
-    return this.dataSource.getPosts();
+    const result = await this.dataSource.getPosts();
+    return result.results;
   }
-  getPost(): IPost {
-    return this.dataSource.getPost();
+
+  async getPost(): Promise<IPost> {
+    const result = await this.dataSource.getPost();
+    return result.results;
   }
 }

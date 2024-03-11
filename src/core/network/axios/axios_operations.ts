@@ -1,8 +1,11 @@
-import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {IAxiosOperations} from './axios_operations_abstract';
 
 class AxiosOperations implements IAxiosOperations {
-  constructor(private axiosInstance: typeof axios) {}
+  private axiosInstance: typeof axios;
+  constructor() {
+    this.axiosInstance = axios;
+  }
 
   private async _handleRequest<T>(
     requestFunction: () => Promise<AxiosResponse<T>>,
