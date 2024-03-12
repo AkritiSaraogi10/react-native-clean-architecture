@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {useApp, RealmProvider} from '@realm/react';
+import {useApp} from '@realm/react';
 import App from '../../App';
 import Realm, {OpenRealmBehaviorType} from 'realm';
 import {ActivityIndicator, SafeAreaView} from 'react-native';
-import UserSchema from './user/UserSchema';
+import UserSchema from './user/user_schema';
+import { RealmContext } from './realm_config';
 
 const RealmWrapper = () => {
+  const {RealmProvider} = RealmContext;
   const app = useApp();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -22,7 +24,6 @@ const RealmWrapper = () => {
     <SafeAreaView style={{flex: 1}}>
       {isLoggedIn ? (
         <RealmProvider
-          schema={[UserSchema]}
           sync={{
             flexible: true,
             newRealmFileBehavior: {

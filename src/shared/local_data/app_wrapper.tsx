@@ -1,5 +1,5 @@
 import {AppProvider, UserProvider} from '@realm/react';
-import RealmWrapper from './RealmWrapper';
+import RealmWrapper from './realm_wrapper';
 
 const AppWrapper = () => {
   return (
