@@ -3,6 +3,7 @@ import ApiResponse from '../../../../core/models/api_response';
 import {PostDataSource} from './post_data_source';
 import AxiosOperations from '../../../../core/network/axios/axios_operations';
 import PostDto from '../dto/post_dto';
+import {ServerException} from '../../../../core/errors/server_exceptions';
 
 class PostDataApiImpl implements PostDataSource {
   axiosOperations: AxiosOperations;
