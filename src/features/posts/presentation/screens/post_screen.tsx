@@ -16,7 +16,7 @@ export default function PostScreen() {
   return (
     <View>
       <Text style={{fontWeight: 'bold', fontSize: 16, alignSelf: 'center'}}>Post Screen</Text>
-      <View>
+            <View>
         <FlatList
           data={users}
           keyExtractor={(item) => item._id.toString()}

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import AxiosOperations from "../../../../core/network/axios/axios_operations";
 import { RealmContext } from "../../../../shared/local_data/realm_config";
-import UserService from "../../../../shared/local_data/user/user_service";
+import UserService from "../../../../shared/local_data/collections/user/user_service";
 import { PostRepositoryImpl } from "../../data/repository/post_repository_impl";
 import PostDataAPIImp from '../../data/data_sources/post_data_api_impl';
 import { GetPostsUseCase } from "../../domain/usecases/get_post_usecase";
-import UserSchema from "../../../../shared/local_data/user/user_schema";
+import UserSchema from "../../../../shared/local_data/collections/user/user_schema";
 import { BSON } from "realm";
 
 
@@ -35,8 +35,8 @@ const usePostScreenData = () => {
       userId: '4',
       body: 'This is a new user added using the button',
     } as UserSchema;
-  
-    userService.addUserToRealm(newUser);
+
+        userService.addUserToRealm(newUser);
   };
 
   const handleDeleteUser = (id: string) => userService.deleteUserFromRealm(id ?? '');
