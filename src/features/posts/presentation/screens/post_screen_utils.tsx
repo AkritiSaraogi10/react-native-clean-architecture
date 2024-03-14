@@ -5,7 +5,7 @@ import UserService from "../../../../shared/local_data/collections/user/user_ser
 import { PostRepositoryImpl } from "../../data/repository/post_repository_impl";
 import PostDataAPIImp from '../../data/data_sources/post_data_api_impl';
 import UserSchema from "../../../../shared/local_data/collections/user/user_schema";
-import { BSON } from "realm";
+import { BSON, OrderedCollection, Results } from "realm";
 import { handleInternetAvailability } from "./selector";
 import { IPost } from "../../domain/entities/post_entity";
 
@@ -19,20 +19,16 @@ const usePostScreenData = () => {
   const [users, setUsers] = useState<IPost[]>([]);
   const realm = useRealm();
 
+  const service = handleInternetAvailability({forInternet: postRepositoryImpl, forNoInternet: userService});
+
   useEffect(()=>{
-    handleInternetAvailability(
-      async () => {
-        const data = await postRepositoryImpl.getPosts();
-        setUsers(data);
+   const fetchData = async () => {
+      const collection = await service.getPosts((collection: OrderedCollection<UserSchema>) => {
+          console.log('REALM DATA  :',  collection);
+        });
+      setUsers(collection);
     }
-    , () =>{
-      const realmColletion = userService.fetchAllUsersFromRealm();
-      realmColletion.addListener((collection, changes) => {
-        console.log('REALM DATA  :',  collection);
-        setUsers(collection.map(user => user) as unknown as IPost[]);
-      });
-      return () => realmColletion.removeAllListeners();
-    })
+    fetchData();
   }, [realm]);
 
    const handleButtonClick = () => {
