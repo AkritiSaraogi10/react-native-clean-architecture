@@ -1,14 +1,15 @@
+import { BSON } from 'realm';
 import {IPost} from '../../domain/entities/post_entity';
 
 class PostDto implements IPost {
   userId: string;
-  id: string;
+  _id: BSON.ObjectId;
   title: string;
   body: string;
 
-  constructor(userId: string, id: string, title: string, body: string) {
+  constructor(userId: string, id: BSON.ObjectId, title: string, body: string) {
     this.userId = userId;
-    this.id = id;
+    this._id = id;
     this.title = title;
     this.body = body;
   }

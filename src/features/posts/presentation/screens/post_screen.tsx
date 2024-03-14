@@ -18,8 +18,8 @@ export default function PostScreen() {
       <Text style={{fontWeight: 'bold', fontSize: 16, alignSelf: 'center'}}>Post Screen</Text>
             <View>
         <FlatList
-          data={users}
-          keyExtractor={(item) => item._id.toString()}
+          data={users.slice(0, 5)}
+          keyExtractor={(item) => item?._id?.toString()}
           renderItem={renderItem}
         />
       </View>
