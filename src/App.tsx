@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import PostScreen from './features/posts/presentation/screens/postScreen';
+import PostScreen from './features/posts/presentation/screens/post_screen';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
