@@ -3,7 +3,6 @@ import {useApp} from '@realm/react';
 import App from '../../App';
 import Realm, {OpenRealmBehaviorType} from 'realm';
 import {ActivityIndicator, SafeAreaView} from 'react-native';
-import UserSchema from './collections/user/user_schema';
 import { RealmContext } from './realm_config';
 
 const RealmWrapper = () => {
