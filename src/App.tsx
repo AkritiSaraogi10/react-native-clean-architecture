@@ -1,15 +1,20 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { Provider } from 'react-redux';
+import { SafeAreaView, StatusBar, StyleSheet, useColorScheme } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Provider as QueryProvider } from 'react-redux';
+import { setupListeners } from '@reduxjs/toolkit/query/react';
+import PostScreen from './features/posts/presentation/screens/post_screen';
+import { store } from './features/posts/store';
+import { postApis } from './features/posts/data/data_sources/post_data_api_impl_rtk';
+import AppNavigation from './core/navigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import PostScreen from './features/posts/presentation/screens/postScreen';
+const postApi = postApis;
 
-function App(): React.JSX.Element {
+setupListeners(store.dispatch);
+
+const App: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -17,32 +22,23 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <PostScreen />
-    </SafeAreaView>
+    <SafeAreaProvider style={[styles.container, backgroundStyle]}>
+      <Provider store={store}>
+        <QueryProvider store={store}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <AppNavigation />
+        </QueryProvider>
+      </Provider>
+    </SafeAreaProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
   },
 });
 
