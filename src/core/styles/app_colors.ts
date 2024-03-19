@@ -1,4 +1,4 @@
-module.exports = {
+const Colors = {
   primary: '#0078D4',
   secondary: '#605E5C',
   darkGreen: '#107C10',
@@ -7,6 +7,7 @@ module.exports = {
   lightGray: '#EDEBE9',
   secondaryGray: '#A19F9D',
   naturalGray: '#8A8886',
+  midGray: '#d9d9d9',
   desertStrom: '#F3F2F1',
   darkBlue: '#004578',
   lightBlue: '#DEECF9',
@@ -46,3 +47,4 @@ module.exports = {
   placeholderGray: '#707070',
   softRed: '#FA410033',
 };
+export default Colors;
