@@ -1,4 +1,4 @@
-module.exports = {
+const Colors = {
   primary: '#0078D4',
   secondary: '#605E5C',
   darkGreen: '#107C10',
@@ -46,3 +46,4 @@ module.exports = {
   placeholderGray: '#707070',
   softRed: '#FA410033',
 };
+export default Colors;
