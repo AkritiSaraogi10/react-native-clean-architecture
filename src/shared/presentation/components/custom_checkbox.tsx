@@ -1,11 +1,18 @@
 import React from 'react';
 import { Checkbox } from 'react-native-paper';
-interface CustomCheckBoxProps {
+import Colors from '../../../core/styles/app_colors';
+interface ICustomCheckBoxProps {
     initialState?: boolean;
     onStateChange: (newState: boolean) => void;
     color: string;
+    uncheckedColor?: string
 }
-const CustomCheckBox = ({ initialState = false, onStateChange, color }: CustomCheckBoxProps) => {
+const CustomCheckBox = ({
+    initialState = false,
+    onStateChange, color,
+    uncheckedColor = Colors.greyColor
+}:
+    ICustomCheckBoxProps) => {
     const [checked, setChecked] = React.useState(initialState);
 
     const toggleCheckbox = () => {
@@ -21,7 +28,7 @@ const CustomCheckBox = ({ initialState = false, onStateChange, color }: CustomCh
             status={checked ? 'checked' : 'unchecked'}
             onPress={toggleCheckbox}
             color={color}
-            uncheckedColor='#ABABAB'
+            uncheckedColor={uncheckedColor}
         />
     );
 };

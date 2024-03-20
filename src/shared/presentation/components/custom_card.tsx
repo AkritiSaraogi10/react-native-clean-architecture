@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Colors from '../../../core/styles/app_colors';
 
-interface CustomCardProps {
+interface ICustomCardProps {
     title: string;
     subtitle?: string;
     leftIcon: React.ReactNode;
@@ -21,11 +22,11 @@ const CustomCard = ({
     rightIcon,
     borderRadius = 12,
     onCardPress,
-    belowContentFillColor = 'red',
+    belowContentFillColor = Colors.yellowColor,
     belowContentIcon,
     belowContentText,
     belowContentTextColor
-}: CustomCardProps) => {
+}: ICustomCardProps) => {
     const titleStyle = subtitle ? styles.titleWithSubtitle : styles.titleWithoutSubtitle;
     return (
         <View style={[styles.viewContainer, { borderRadius: borderRadius }]}>
@@ -44,7 +45,7 @@ const CustomCard = ({
             {belowContentText && (
                 <View>
                     <View style={[styles.belowContentContainer, { backgroundColor: belowContentFillColor }]}>
-                        <View style={styles.leftIconContainer}>
+                        <View style={styles.belowLeftIconContainer}>
                             {belowContentIcon}
                         </View>
                         <Text style={[styles.belowContentText, { color: belowContentTextColor }]}>
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '700',
         textAlign: 'left',
-        color: '#464646'
+        color: Colors.titleColor
     },
     titleWithoutSubtitle: {
         fontSize: 18,
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         justifyContent: 'center',
         verticalAlign: 'middle',
-        color: '#464646'
+        color: Colors.titleColor
     },
     textContainer: {
         flex: 1,
@@ -82,11 +83,15 @@ const styles = StyleSheet.create({
         marginRight: 10,
         justifyContent: 'center',
     },
+    belowLeftIconContainer: {
+        marginRight: 2,
+        justifyContent: 'center',
+    },
     viewContainer: {
-        borderColor: '#D7D7D7',
+        borderColor: Colors.cardBorderColors,
         borderWidth: 1,
         borderRadius: 12,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: Colors.backgroundColor,
         marginBottom: 10,
         padding: 10
     },
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontStyle: 'normal',
         fontWeight: '700',
-        color: '#464646',
+        color: Colors.titleColor,
         textAlignVertical: 'auto',
     },
     centeredTitle: {
@@ -116,10 +121,6 @@ const styles = StyleSheet.create({
         paddingRight: 4,
         paddingTop: 2,
         paddingBottom: 2
-    },
-    belowContentTextWrapper: {
-        flex: 1,
-        alignSelf: 'flex-start',
     },
     belowContentText: {
         fontSize: 14,

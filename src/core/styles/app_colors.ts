@@ -45,5 +45,15 @@ const Colors = {
   hightlight: '#FFC80A',
   placeholderGray: '#707070',
   softRed: '#FA410033',
+  titleColor: '#464646',
+  backgroundColor: '#E5E5E5',
+  cardBorderColors: '#D7D7D7',
+  greenColor: "#4C6700",
+  lightGreenColor: '#7C9B32',
+  yellowColor: '#D8A300',
+  greyColor: "#ABABAB",
+  unfocusedColor: "#777777",
+  focusedColor: '#2C331C',
+  lightGreenBorderColor: '#DEE6C5',
 };
 export default Colors;

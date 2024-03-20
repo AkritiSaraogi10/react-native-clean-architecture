@@ -6,8 +6,10 @@ import {
   useColorScheme,
 } from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/postScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppNav from './shared/presentation/components/bottom_nav_bar/bottom_menu';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -17,13 +19,9 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <PostScreen />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <AppNav />
+    </SafeAreaProvider>
   );
 }
 

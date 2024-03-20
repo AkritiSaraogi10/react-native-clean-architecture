@@ -11,6 +11,7 @@ import CustomCheckBox from "../custom_checkbox";
 import CustomRadioButton from "../custom_radio_button";
 import CustomCard from "../custom_card";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Colors from "../../../../core/styles/app_colors";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,27 +37,27 @@ const EmptyScreen = () => {
       <CustomCheckBox
         initialState={isChecked}
         onStateChange={handleCheckboxChange}
-        color={'#4C6700'}
+        color={Colors.greenColor}
       />
       <CustomRadioButton
         checked={isChecked1}
         onCheckChange={handleCheckChange}
-        color={'#4C6700'}
-        uncheckedColor={'#ABABAB'}
+        color={Colors.greenColor}
+        uncheckedColor={Colors.greyColor}
 
       />
-      <CustomCard title={"Ing Name"} belowContentTextColor={"#FFFFFF"}
+      <CustomCard title={"Ing Name"} belowContentTextColor={Colors.white}
         belowContentText="14 Run out Days"
-        belowContentFillColor="#D8A300"
+        belowContentFillColor={Colors.yellowColor}
         subtitle={"On Hand - xx amount"}
         borderRadius={0}
-        leftIcon={<MaterialIcon name="access-time" size={40} color={'#4C6700'} onPress={() => { }} />}
-        belowContentIcon={<MaterialIcon name="access-time" size={18} color={'#FFFFFF'} />}
+        leftIcon={<MaterialIcon name="access-time" size={40} color={Colors.lightGreenColor} onPress={() => { }} />}
+        belowContentIcon={<MaterialIcon name="access-time" size={18} color={Colors.white} />}
       />
       <CustomCard title={"Feeding"}
-        leftIcon={<MaterialIcon name="access-time" size={40} color={'#4C6700'} onPress={() => { }} />}
-        belowContentIcon={<MaterialIcon name="access-time" size={18} color={'#FFFFFF'} />}
-        rightIcon={<MaterialIcon name="arrow-forward" size={28} color={'#4C6700'} />}
+        leftIcon={<MaterialIcon name="access-time" size={40} color={Colors.lightGreenColor} onPress={() => { }} />}
+        belowContentIcon={<MaterialIcon name="access-time" size={18} color={Colors.white} />}
+        rightIcon={<MaterialIcon name="arrow-forward" size={28} color={Colors.greenColor} />}
       />
     </View>
   );

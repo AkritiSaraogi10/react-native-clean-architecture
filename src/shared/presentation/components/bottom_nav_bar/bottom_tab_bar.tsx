@@ -5,6 +5,7 @@ import {
   Text,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import Colors from "../../../../core/styles/app_colors";
 export const TabBar = ({
   state,
   descriptors,
@@ -57,11 +58,11 @@ export const TabBar = ({
                   height: "100%",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderColor: isFocused ? "#DEE6C5" : '#E5E5E5',
+                  borderColor: isFocused ? Colors.lightGreenBorderColor : Colors.backgroundColor,
                   borderTopWidth: isFocused ? 3 : 1,
                 }} >
-                {tabBarIcon && tabBarIcon({ focused: isFocused, color: isFocused ? "#2C331C" : "#777777", size: 24 })}
-                <Text style={{ color: isFocused ? "#2C331C" : "#777777", paddingTop: 10, fontSize: 14, fontWeight: '700' }}>
+                {tabBarIcon && tabBarIcon({ focused: isFocused, color: isFocused ? Colors.focusedColor : Colors.unfocusedColor, size: 24 })}
+                <Text style={{ color: isFocused ? Colors.focusedColor : Colors.unfocusedColor, paddingTop: 10, fontSize: 14, fontWeight: '700' }}>
                   {label.toString()}</Text>
               </View>
             </TouchableOpacity>
@@ -75,7 +76,7 @@ export const TabBar = ({
 const style = StyleSheet.create({
   tabContainer: {
     height: 80,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     position: "absolute",
     bottom: 0,
     left: 0,
