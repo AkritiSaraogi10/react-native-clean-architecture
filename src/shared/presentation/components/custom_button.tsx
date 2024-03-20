@@ -3,14 +3,14 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import Colors from '../../../core/styles/app_colors';
 
 interface ICustomButton {
-    title: string, 
-    icon?: JSX.Element, 
-    height: number,
-    width: number, 
-    mode?: 'outlined' | 'contained' | 'text'
-    onPress: () => void
+  title: string,
+  icon?: JSX.Element,
+  height: number,
+  width: number,
+  mode?: 'outlined' | 'contained' | 'text'
+  onPress: () => void
 }
-const CustomButton = ({title, icon, height, width, mode = 'contained', onPress} : ICustomButton) => {
+const CustomButton = ({ title, icon, height, width, mode = 'contained', onPress }: ICustomButton) => {
   const borderRadius = height / 2;
 
   return (

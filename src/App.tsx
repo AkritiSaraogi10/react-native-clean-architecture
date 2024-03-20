@@ -6,9 +6,8 @@ import {
   useColorScheme,
 } from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/postScreen';
-import CustomButton from './shared/presentation/components/custom_button';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
