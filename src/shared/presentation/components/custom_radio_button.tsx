@@ -1,14 +1,14 @@
 import React from 'react';
 import { RadioButton } from 'react-native-paper';
 
-interface CustomRadioButtonProps {
+interface ICustomRadioButtonProps {
     checked: boolean;
     onCheckChange: (checked: boolean) => void;
     color: string;
     uncheckedColor: string
 }
 
-const CustomRadioButton = ({ checked, onCheckChange, color, uncheckedColor }: CustomRadioButtonProps) => {
+const CustomRadioButton = ({ checked, onCheckChange, color, uncheckedColor }: ICustomRadioButtonProps) => {
     return (
         <RadioButton.Android
             value="true"
