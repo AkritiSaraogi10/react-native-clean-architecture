@@ -59,7 +59,7 @@ export const FilterBottomSheet = ({
       gap: 24,
       paddingVertical: 20,
       paddingHorizontal: 16,
-      borderColor: Colors.titaniumWhite,
+      borderColor: Colors.backgroundColor,
       borderBottomWidth: 1,
     },
     bottomSheetItemStyle: {
@@ -67,7 +67,7 @@ export const FilterBottomSheet = ({
       justifyContent: 'space-between',
       paddingHorizontal: 16,
       alignItems: 'center',
-      borderColor: Colors.titaniumWhite,
+      borderColor: Colors.backgroundColor,
       borderBottomWidth: 1,
       paddingVertical: 12,
     },
@@ -97,7 +97,7 @@ export const FilterBottomSheet = ({
       lineHeight: 16,
       fontFamily: 'Uni Neue',
       fontWeight: '700',
-      color: Colors.boulderGray,
+      color: Colors.unfocusedColor,
       textAlign: 'center',
     },
     bottomSheetItemTwoStyle: {
@@ -119,14 +119,14 @@ export const FilterBottomSheet = ({
       gap: 16,
       paddingTop: 16,
       paddingHorizontal: 16,
-      borderColor: Colors.titaniumWhite,
+      borderColor: Colors.backgroundColor,
       justifyContent: 'space-between',
     },
     bottomSheetBottomTextStyle: {
       fontSize: 18,
       lineHeight: 24,
       fontWeight: '700',
-      color: Colors.green,
+      color: Colors.greenColor,
       fontFamily: 'Uni Neue',
       paddingHorizontal: 12,
       paddingTop: 10,
@@ -134,8 +134,8 @@ export const FilterBottomSheet = ({
     },
     showAllButtonContainer: {
       flex: 1,
-      backgroundColor: Colors.green,
-      borderColor: Colors.green,
+      backgroundColor: Colors.greenColor,
+      borderColor: Colors.greenColor,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 100,
@@ -194,7 +194,7 @@ export const FilterBottomSheet = ({
                         <Icon
                           source={option.badgeOne.icon}
                           size={18}
-                          color={Colors.boulderGray}
+                          color={Colors.unfocusedColor}
                         />
                       )}
                       <Text style={styles.bottomSheetItemCountTextStyle}>
@@ -209,7 +209,7 @@ export const FilterBottomSheet = ({
                         {
                           backgroundColor: (option.isSelected
                             ? Colors.frost
-                            : Colors.titaniumWhite) as ColorValue,
+                            : Colors.backgroundColor) as ColorValue,
                         },
                       ]}>
                       <Text
@@ -230,16 +230,16 @@ export const FilterBottomSheet = ({
                   <Checkbox
                     status={option.isSelected ? 'checked' : 'unchecked'}
                     onPress={() => handleClick('tailListItem', index)}
-                    uncheckedColor={Colors.warmGray}
-                    color={Colors.green}
+                    uncheckedColor={Colors.greenColor}
+                    color={Colors.greenColor}
                   />
                 ) : type === 'radio' ? (
                   <RadioButton
                     status={option.isSelected ? 'checked' : 'unchecked'}
                     onPress={() => handleClick('tailListItem', index)}
-                    uncheckedColor={Colors.warmGray}
+                    uncheckedColor={Colors.greenColor}
                     value={option.text}
-                    color={Colors.green}
+                    color={Colors.greenColor}
                   />
                 ) : type === 'Icon' ? (
                   <TouchableOpacity
@@ -251,7 +251,7 @@ export const FilterBottomSheet = ({
                       color={
                         option.isSelected
                           ? Colors.iconGreen
-                          : Colors.boulderGray
+                          : Colors.unfocusedColor
                       }
                     />
                   </TouchableOpacity>

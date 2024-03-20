@@ -65,7 +65,7 @@ export const HorizantolTabs = ({
       paddingBottom: 0,
     },
     textStyle: {
-      color: Colors.blackCurant,
+      color: Colors.focusedColor,
       alignItems: 'center',
       fontWeight: '700',
       fontFamily: 'Uni Neue',

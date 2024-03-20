@@ -95,7 +95,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
           x={size / 2}
           y={size / 2 + (props.textSize ? props.textSize / 2 - 1 : 5)}
           textAnchor="end"
-          fill={props.textColor ? props.textColor : Colors.warmGray}>
+          fill={props.textColor ? props.textColor : Colors.greenColor}>
           <View style={styles.container}>
             <Text style={styles.text}>{props.progressPercent}%</Text>
             <Text style={styles.subText}>{text}</Text>
