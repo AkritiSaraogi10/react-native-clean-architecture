@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import {ProgressBar} from 'react-native-paper';
+import Colors from '../../../core/styles/app_colors';
 
 interface ICustomProgressBarProps {
   fillColor?: string;
@@ -23,10 +24,10 @@ const CustomProgressBar = ({
   progress,
   indeterminate = false,
   arrayOfProgressObjects = [
-    {progress, style: {backgroundColor: fillColor || 'blue'}},
+    {progress, style: {backgroundColor: fillColor || Colors.midBlue}},
     {
       progress: 1 - progress,
-      style: {backgroundColor: unFillColor || '#F4F4F4'},
+      style: {backgroundColor: unFillColor || Colors.lightSmokeWhite},
     },
   ],
 }: ICustomProgressBarProps) => {

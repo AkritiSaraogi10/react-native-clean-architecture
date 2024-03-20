@@ -2,6 +2,7 @@ import * as React from 'react';
 import {DimensionValue, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Icon, SegmentedButtons} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import Colors from '../../../core/styles/app_colors';
 
 interface ISegmentBarProps {
   value: string;
@@ -35,20 +36,21 @@ const CustomSegmentBar = ({value, setValue, buttons}: ISegmentBarProps) => {
                 borderTopLeftRadius: 8,
                 borderWidth: 0,
                 elevation: value === button.value ? 5 : 0,
-                backgroundColor: value === button.value ? 'white' : '#F4F4F4',
+                backgroundColor: value === button.value ? Colors.white : Colors.lightSmokeWhite,
                 width: '100%' as DimensionValue | undefined,
               },
-              // eslint-disable-next-line react/no-unstable-nested-components
               icon: () =>
-                button.iconSource ? (
-                  <Icon
-                    source={button.iconSource}
-                    size={20}
-                    color={button.iconColor ? button.iconColor : 'black'}
-                  />
-                ) : undefined,
+                button.iconSource
+                  ? ((
+                      <Icon
+                        source={button.iconSource}
+                        size={20}
+                        color={button.iconColor ? button.iconColor : Colors.black}
+                      />
+                    ) as JSX.Element)
+                  : undefined,
               labelStyle: {
-                color: '#303030',
+                color: Colors.darkGray,
                 fontSize: 14,
                 fontFamily: 'Uni Neue',
               },

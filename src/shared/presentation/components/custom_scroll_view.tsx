@@ -24,30 +24,27 @@ const CustomScrollView = ({
 }: ICustomScrollViewProps) => {
   const lastScrollPosition = useRef(0);
   const styles = StyleSheet.create({
-    container: {height: height ?? '100%', backgroundColor: 'white'},
+    container: {height: height ?? '100%'},
   });
   return (
-    <>
-      <View style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-          keyboardShouldPersistTaps="handled"
-          onScrollBeginDrag={event => {
-            const currentScrollPosition = event.nativeEvent.contentOffset.y;
-            if (currentScrollPosition > lastScrollPosition.current) {
-              if (Keyboard.isVisible()) {
-                Keyboard.dismiss();
-              }
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+        keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={event => {
+          const currentScrollPosition = event.nativeEvent.contentOffset.y;
+          if (currentScrollPosition > lastScrollPosition.current) {
+            if (Keyboard.isVisible()) {
+              Keyboard.dismiss();
             }
-            lastScrollPosition.current = currentScrollPosition;
-          }}
-          horizontal={horizontal}
-          showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
-        >
-          {children}
-        </ScrollView>
-      </View>
-    </>
+          }
+          lastScrollPosition.current = currentScrollPosition;
+        }}
+        horizontal={horizontal}
+        showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}>
+        {children}
+      </ScrollView>
+    </View>
   );
 };
 

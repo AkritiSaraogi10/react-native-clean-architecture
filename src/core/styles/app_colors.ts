@@ -1,4 +1,4 @@
-module.exports = {
+const Colors = {
   primary: '#0078D4',
   secondary: '#605E5C',
   darkGreen: '#107C10',
@@ -45,4 +45,16 @@ module.exports = {
   hightlight: '#FFC80A',
   placeholderGray: '#707070',
   softRed: '#FA410033',
+  titaniumWhite: '#E5E5E5',
+  darkGray: '#303030',
+  smokeWhite: '#F9F9F9',
+  lightSmokeWhite: '#F4F4F4',
+  boulderGray: '#777777',
+  green: '#4C6700',
+  frost: '#DEE6C5',
+  leafGreen: '#394D00',
+  warmGray: '#ABABAB',
+  iconGreen: '#638118',
+  blackCurant: '#2C331C',
 };
+export default Colors;

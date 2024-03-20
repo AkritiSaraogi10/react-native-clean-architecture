@@ -1,6 +1,7 @@
 import React from 'react';
 import {DimensionValue, StyleSheet, Text, View} from 'react-native';
 import {Svg, Circle, Text as SVGText} from 'react-native-svg';
+import Colors from '../../../core/styles/app_colors';
 
 interface CircularProgressProps {
   size: number;
@@ -38,7 +39,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
     text: {
       fontSize: 28,
       fontFamily: 'Uni Neue',
-      color: 'black',
+      color: Colors.black,
       fontWeight: '700',
     },
     subText: {
@@ -52,7 +53,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
       <Svg width={size} height={size}>
         {/* Background Circle */}
         <Circle
-          stroke={'white'}
+          stroke={Colors.white}
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -61,7 +62,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
         />
 
         <Circle
-          stroke={props.bgColor ? props.bgColor : '#f2f2f2'}
+          stroke={props.bgColor ? props.bgColor : Colors.lightSmokeWhite}
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -76,7 +77,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
         />
 
         <Circle
-          stroke={props.pgColor ? props.pgColor : '#3b5998'}
+          stroke={props.pgColor ? props.pgColor : Colors.midBlue}
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -94,7 +95,7 @@ const CircularProgress: React.FC<CircularProgressProps> = (props) => {
           x={size / 2}
           y={size / 2 + (props.textSize ? props.textSize / 2 - 1 : 5)}
           textAnchor="end"
-          fill={props.textColor ? props.textColor : '#333333'}>
+          fill={props.textColor ? props.textColor : Colors.warmGray}>
           <View style={styles.container}>
             <Text style={styles.text}>{props.progressPercent}%</Text>
             <Text style={styles.subText}>{text}</Text>
