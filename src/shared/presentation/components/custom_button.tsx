@@ -16,7 +16,7 @@ const CustomButton = ({title, icon, height, width, mode = 'contained', onPress} 
   return (
     <TouchableOpacity onPress={onPress} style={[mode === 'contained' ? styles.containedButton : mode === 'outlined' ? styles.outlinedButton : styles.textButton, { width, height, borderRadius }]}>
       {icon && <View style={styles.icon}>{icon}</View>}
-      <Text style={mode === 'contained' ? styles.outlinedButtonText : mode === 'outlined' ? styles.containedButtonText : styles.textButtonText}>{title}</Text>
+      <Text style={mode === 'contained' ? styles.containedButtonText : mode === 'outlined' ? styles.outlinedButtonText : styles.textButtonText}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   containedButtonText: {
-    color: Colors.darkGreen,
+    color: Colors.white,
     fontSize: 16,
     fontWeight: '400',
   },
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   outlinedButtonText: {
-    color: Colors.white,
+    color: Colors.darkGreen,
     fontSize: 16,
     fontWeight: '400',
   },
