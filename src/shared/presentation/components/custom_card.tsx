@@ -25,7 +25,7 @@ const CustomCard = ({
     belowContentFillColor = Colors.yellowColor,
     belowContentIcon,
     belowContentText,
-    belowContentTextColor
+    belowContentTextColor = Colors.white
 }: ICustomCardProps) => {
     const titleStyle = subtitle ? styles.titleWithSubtitle : styles.titleWithoutSubtitle;
     return (
