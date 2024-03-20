@@ -36,6 +36,7 @@ const CustomAlert = ({
               <Text style={{ fontSize: 20, fontWeight: '600', color: 'black' }}>{title}</Text>
               <Text style={{ fontSize: 15, fontWeight: '500', color: 'black' }}>{description}</Text>
             </View>
+            <View style={{alignItems: 'flex-end', alignSelf: 'flex-end'}}>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -51,6 +52,7 @@ const CustomAlert = ({
               >
                 <Text style={[styles.buttonText, { margin: 10 }]}>{suffixButtonText}</Text>
               </TouchableOpacity>
+            </View>
             </View>
           </View>
         </View>
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     backgroundColor: 'white',
     height: 190,
     width: '90%',
@@ -104,11 +106,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: Colors.darkGreen,
+    borderColor: Colors.greenColor,
     marginBottom: 10,
   },
   buttonText: {
-    color: Colors.darkGreen,
+    color: Colors.greenColor,
     fontSize: 15,
     fontWeight: '600',
   },

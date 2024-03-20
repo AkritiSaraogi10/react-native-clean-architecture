@@ -26,7 +26,7 @@ const Carousel = ({ data, renderSliderContent }: ICarousel) => {
         style={[
           styles.normalDots,
           {
-            backgroundColor: index === currentIndex ? Colors.darkGreen : Colors.midGray,
+            backgroundColor: index === currentIndex ? Colors.greenColor : Colors.midGray,
           },
         ]}
       />

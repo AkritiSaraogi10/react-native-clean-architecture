@@ -31,9 +31,9 @@ const CustomBottomSheetAlert = ({
                 <View style={styles.iconContainer}>{icon}</View>
                 <View>
                   <Text style={styles.titleText}>{title}</Text>
-                  <Text style={styles.dateText}>
+                  {/* <Text style={styles.dateText}>
                     {date ? `Date as of ${date} - ${time}` : ""}
-                  </Text>
+                  </Text> */}
                 </View>
               </View>
               <Text style={styles.descriptionText}>{description}</Text>

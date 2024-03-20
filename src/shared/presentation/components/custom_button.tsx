@@ -23,7 +23,7 @@ const CustomButton = ({ title, icon, height, width, mode = 'contained', onPress 
 
 const styles = StyleSheet.create({
   containedButton: {
-    backgroundColor: Colors.darkGreen,
+    backgroundColor: Colors.greenColor,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row-reverse',
-    borderColor: Colors.darkGreen,
+    borderColor: Colors.greenColor,
     borderWidth: 1
   },
   outlinedButtonText: {
-    color: Colors.darkGreen,
+    color: Colors.greenColor,
     fontSize: 16,
     fontWeight: '400',
   },
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse'
   },
   textButtonText: {
-    color: Colors.darkGreen,
+    color: Colors.greenColor,
     fontSize: 16,
     fontWeight: '400',
   },
