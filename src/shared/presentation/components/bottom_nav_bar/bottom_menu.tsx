@@ -18,7 +18,7 @@ import CustomButton from "../custom_button";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
+///
 
 const EmptyScreen = () => {
   return (
