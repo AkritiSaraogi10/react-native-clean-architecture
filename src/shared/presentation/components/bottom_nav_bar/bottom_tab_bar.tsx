@@ -13,7 +13,7 @@ export const TabBar = ({
 }: BottomTabBarProps) => {
 
   return (
-    <View style={[style.tabContainer]}>
+    <View style={[styles.tabContainer]}>
       <View style={{ flexDirection: "row" }}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -54,15 +54,15 @@ export const TabBar = ({
               style={{ flex: 1 }}
               key={index}>
               <View
-                style={{
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderColor: isFocused ? Colors.lightGreenBorderColor : Colors.backgroundColor,
-                  borderTopWidth: isFocused ? 3 : 1,
-                }} >
+                style={
+                  [styles.tabBarStyle,
+                  {
+                    borderColor: isFocused ? Colors.lightGreenBorderColor : Colors.backgroundColor,
+                    borderTopWidth: isFocused ? 3 : 1,
+                  }]
+                } >
                 {tabBarIcon && tabBarIcon({ focused: isFocused, color: isFocused ? Colors.focusedColor : Colors.unfocusedColor, size: 24 })}
-                <Text style={{ color: isFocused ? Colors.focusedColor : Colors.unfocusedColor, paddingTop: 10, fontSize: 14, fontWeight: '700' }}>
+                <Text style={[styles.textStyle, { color: isFocused ? Colors.focusedColor : Colors.unfocusedColor, }]}>
                   {label.toString()}</Text>
               </View>
             </TouchableOpacity>
@@ -73,7 +73,7 @@ export const TabBar = ({
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   tabContainer: {
     height: 80,
     backgroundColor: Colors.white,
@@ -82,4 +82,14 @@ const style = StyleSheet.create({
     left: 0,
     right: 0,
   },
+  tabBarStyle: {
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textStyle: {
+    paddingTop: 10,
+    fontSize: 14,
+    fontWeight: '700'
+  }
 });
