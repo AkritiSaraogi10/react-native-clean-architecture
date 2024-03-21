@@ -4,7 +4,7 @@ import {
   BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import { Button, Text, View } from "react-native";
-import { TabBar } from "./bottom_tab_bar";
+import TabBar from "./bottom_tab_bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'

@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Colors from "../../../../core/styles/app_colors";
-export const TabBar = ({
+const BottomTabBar = ({
   state,
   descriptors,
   navigation,
@@ -93,3 +93,5 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   }
 });
+
+export default BottomTabBar;
