@@ -10,6 +10,8 @@ import { handleInternetAvailability } from "../../../../core/utils/selector";
 import { IPost } from "../../domain/entities/post_entity";
 import { IPostScreenFieldsData, postScreenFields } from "../interface/post_screen_fields";
 import PostDto from "../../data/dto/post_dto";
+import { useSelector } from "react-redux";
+import store from "../../../../shared/presentation/redux/store";
 
 // Instantiate necessary objects and services
 const postService = PostService.getInstance();
@@ -19,39 +21,43 @@ const postRepositoryImpl = new PostRepositoryImpl(postDataAPIImp, postService);
 const { useRealm } = RealmContext;
 
 // Providing Internet and Realm services instance to handling data availability which returns one instance based on Internet Availability
-const service = handleInternetAvailability({apiServiceInstance: postRepositoryImpl, realmServiceInstance: postService});
+
 
 // Custom hook to manage state and data for the post screen
 const usePostScreenData = () => {
   const [posts, setPosts] = useState<IPost[]>([]);  // State for storing posts
   const [formFields, setFormFields] = useState<IPostScreenFieldsData>(postScreenFields);  // State for formfields
   const realm = useRealm();  // Accessing Realm context and listener from RealmContext
-
+  const internet = useSelector((state: any) => state.internet.isConnected)
+  const service = handleInternetAvailability({ apiServiceInstance: postRepositoryImpl, realmServiceInstance: postService });
+  console.log('internet selector', internet);
   useEffect(() => {
+
     // Effect to fetch posts and set up a listener for changes in Realm
-    const listener = (collection: OrderedCollection<PostSchema>) => {
+    const listener = (collection: OrderedCollection<PostSchema>, changes: any) => {
       const posts: IPost[] = collection.map((item: any) => {
         // Mapping Realm objects to IPost entities and storing in local posts state
         return PostDto.fromJson(item);
       });
-      setPosts(posts);
+      console.log("changes", changes);
+      setPosts(posts.slice(0, 10));
     };
 
     const fetchData = async () => {
       try {
         const data = await service.getPosts(listener);
-        setPosts(data);
-      } catch(e){
+        setPosts(data.slice(0, 10));
+      } catch (e) {
         console.log('error', e);
       }
-      
+
     };
     fetchData();
-    return () => {};
-  }, [realm]);  // Effect runs when realm context changes happens
-
-    // Function to handle adding a new post
-   const handleAddPost = (fields: IPostScreenFieldsData) => {
+    return () => { };
+  }, [realm, internet]);  // Effect runs when realm context changes happens
+  console.log('internet conn', store.getState().internet.isConnected);
+  // Function to handle adding a new post
+  const handleAddPost = (fields: IPostScreenFieldsData) => {
     //creating payload to pass for API and RealmDB call
     const newPost = {
       _id: new BSON.ObjectId(),
