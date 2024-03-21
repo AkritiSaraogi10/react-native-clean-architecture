@@ -230,7 +230,7 @@ export const FilterBottomSheet = ({
                   <Checkbox
                     status={option.isSelected ? 'checked' : 'unchecked'}
                     onPress={() => handleClick('tailListItem', index)}
-                    uncheckedColor={Colors.greenColor}
+                    uncheckedColor={Colors.greyColor}
                     color={Colors.greenColor}
                   />
                 ) : type === 'radio' ? (
