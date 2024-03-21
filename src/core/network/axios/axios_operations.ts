@@ -1,5 +1,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {IAxiosOperations} from './axios_operations_abstract';
+import {ServerException} from '../../errors/server_exceptions';
+import store from '../../../shared/presentation/redux/store';
 
 class AxiosOperations implements IAxiosOperations {
   private axiosInstance: typeof axios;
@@ -11,8 +13,12 @@ class AxiosOperations implements IAxiosOperations {
     requestFunction: () => Promise<AxiosResponse<T>>,
   ): Promise<AxiosResponse<T>> {
     try {
+      if (store.getState().internet.isConnected) {
+        // api response
+      } else {
+        // realm response
+      }
       const response = await requestFunction();
-
       if (response.status >= 200 && response.status < 300) {
         // Successful response, you can handle it accordingly
         return response;
