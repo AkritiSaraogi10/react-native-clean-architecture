@@ -33,7 +33,7 @@ class PostService {
   }
 
   // Method to update a post in the Realm database
-  updatePost(postData: Partial<PostSchema>) {
+  updatePost(postData: Partial<IPost>) {
     this.realmService.updateObjectInRealm(SCHEMA_NAMES.POST, postData);
   }
 

@@ -42,4 +42,7 @@ export class PostRepositoryImpl implements PostRepository {
   deletePost(postId: string): string {
     return '';
   }
+
+  // Method to update a post in the Realm database
+  updatePost(postData: Partial<IPost>) {}
 }

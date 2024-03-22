@@ -1,13 +1,11 @@
-const isInternetAvailable = () => {
-  return true; // Function to check internet availability (currently always returns false for demonstration purposes)
-};
+import store from '../../shared/presentation/redux/store';
 
 // Function to handle internet availability and return the appropriate service instance
 export function handleInternetAvailability<T, U>(options: {
   apiServiceInstance: T;
   realmServiceInstance: U;
 }): T | U {
-  const internet = isInternetAvailable(); // Checking internet availability
+  const internet = store.getState().internet.isConnected; // Checking internet availability
   if (internet) {
     return options.apiServiceInstance; // Returning API service instance if internet is available
   } else {

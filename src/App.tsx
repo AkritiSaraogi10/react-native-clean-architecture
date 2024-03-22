@@ -23,6 +23,8 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
+      console.log('wtf1 ', state);
+
       if (
         ((state.isConnected && state.isInternetReachable) || false) !==
         isConnectedCheck
@@ -42,7 +44,6 @@ function App(): React.JSX.Element {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {

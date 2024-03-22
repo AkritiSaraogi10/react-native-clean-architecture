@@ -1,4 +1,4 @@
-import { IPost } from '../entities/post_entity'; // Importing IPost interface
+import {IPost} from '../entities/post_entity'; // Importing IPost interface
 
 // Abstract of methods which will be implemented in Data layer
 

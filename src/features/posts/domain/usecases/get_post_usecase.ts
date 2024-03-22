@@ -1,5 +1,5 @@
-import { IPost } from '../entities/post_entity';
-import { PostRepository } from '../repository/post_respository';
+import {IPost} from '../entities/post_entity';
+import {PostRepository} from '../repository/post_respository';
 
 // Interface defining methods for getting posts
 export interface GetPosts {
@@ -16,7 +16,7 @@ export class GetPostsUseCase implements GetPosts {
   }
 
   // Delegating to the post repository of domain layer. which ws implemented in data layer and returned the data.
-  
+
   // Method to get multiple posts
   async getPosts(): Promise<IPost[]> {
     return this.postRepo.getPosts();

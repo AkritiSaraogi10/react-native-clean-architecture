@@ -1,5 +1,5 @@
-import { BSON } from 'realm'; // Importing BSON from Realm
-import { IPost } from '../../domain/entities/post_entity'; // Importing IPost interface from domain layer
+import {BSON} from 'realm'; // Importing BSON from Realm
+import {IPost} from '../../domain/entities/post_entity'; // Importing IPost interface from domain layer
 
 // Class representing a post DTO (Data Transfer Object)
 class PostDto implements IPost {
