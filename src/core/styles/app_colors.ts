@@ -56,5 +56,11 @@ const Colors = {
   unfocusedColor: "#777777",
   focusedColor: '#2C331C',
   lightGreenBorderColor: '#DEE6C5',
+  darkGray: '#303030',
+  smokeWhite: '#F9F9F9',
+  lightSmokeWhite: '#F4F4F4',
+  frost: '#DEE6C5',
+  leafGreen: '#394D00',
+  iconGreen: '#638118',
 };
 export default Colors;
