@@ -1,6 +1,6 @@
 import {Dimensions, StyleProp, ViewStyle} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ICustomBottomSheetProps {
   customStyles?:

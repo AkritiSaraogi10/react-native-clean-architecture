@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import {useRef} from 'react';
 import {
   DimensionValue,
   Keyboard,
@@ -23,9 +23,7 @@ const CustomScrollView = ({
   horizontal,
 }: ICustomScrollViewProps) => {
   const lastScrollPosition = useRef(0);
-  const styles = StyleSheet.create({
-    container: {height: height ?? '100%'},
-  });
+  const styles = getStyleSheet(height);
   return (
     <View style={styles.container}>
       <ScrollView
@@ -46,6 +44,13 @@ const CustomScrollView = ({
       </ScrollView>
     </View>
   );
+};
+
+const getStyleSheet = (height: DimensionValue) => {
+  const styles = StyleSheet.create({
+    container: {height: height ?? '100%'},
+  });
+  return styles;
 };
 
 export default CustomScrollView;

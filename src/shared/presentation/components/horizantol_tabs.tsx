@@ -1,4 +1,3 @@
-import React from 'react';
 import {ColorValue, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -46,34 +45,6 @@ export const HorizantolTabs = ({
   headerText: string;
   bottomSheetRef?: React.RefObject<RBSheet>
 }) => {
-  const styles = StyleSheet.create({
-    containerStyle: {flexDirection: 'row', gap: 10, paddingHorizontal: 10, alignItems: 'center'},
-    touchableOpacityContainer: {
-      borderColor: Colors.black,
-      borderWidth: 0.4,
-      height: 32,
-      padding: 0,
-      borderRadius: 8,
-    },
-    viewContainer: {
-      flexDirection: 'row',
-      borderRadius: 8,
-      gap: 8,
-      paddingHorizontal: 8,
-      height: 32,
-      alignItems: 'center',
-      paddingBottom: 0,
-    },
-    textStyle: {
-      color: Colors.focusedColor,
-      alignItems: 'center',
-      fontWeight: '700',
-      fontFamily: 'Uni Neue',
-      fontSize: 16,
-      lineHeight: 20,
-      textAlign: 'center',
-    },
-  });
   return (
     <CustomScrollView
       height={40}
@@ -118,3 +89,32 @@ export const HorizantolTabs = ({
 };
 
 export default HorizantolTabs;
+
+const styles = StyleSheet.create({
+  containerStyle: {flexDirection: 'row', gap: 10, paddingHorizontal: 10, alignItems: 'center'},
+  touchableOpacityContainer: {
+    borderColor: Colors.black,
+    borderWidth: 0.4,
+    height: 32,
+    padding: 0,
+    borderRadius: 8,
+  },
+  viewContainer: {
+    flexDirection: 'row',
+    borderRadius: 8,
+    gap: 8,
+    paddingHorizontal: 8,
+    height: 32,
+    alignItems: 'center',
+    paddingBottom: 0,
+  },
+  textStyle: {
+    color: Colors.focusedColor,
+    alignItems: 'center',
+    fontWeight: '700',
+    fontFamily: 'Uni Neue',
+    fontSize: 16,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+});

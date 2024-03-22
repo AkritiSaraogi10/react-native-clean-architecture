@@ -27,7 +27,12 @@ interface IFilterBottomSheetProps {
     isSelected: boolean;
   }[];
   handleClick: (
-    type?: 'cancel' | 'open' | 'bottomLeftButton' | 'bottomRightButton' | 'tailListItem',
+    type?:
+      | 'cancel'
+      | 'open'
+      | 'bottomLeftButton'
+      | 'bottomRightButton'
+      | 'tailListItem',
     index?: number,
   ) => void;
   bottomSheetRef?: React.RefObject<RBSheet>;
@@ -47,112 +52,6 @@ export const FilterBottomSheet = ({
   bottomSheetRef,
   sheetAttributes,
 }: IFilterBottomSheetProps) => {
-  const styles = StyleSheet.create({
-    bottomSheetTopStyle: {
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      height: 'auto',
-    },
-    bottomSheetTopContainerStyle: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 24,
-      paddingVertical: 20,
-      paddingHorizontal: 16,
-      borderColor: Colors.backgroundColor,
-      borderBottomWidth: 1,
-    },
-    bottomSheetItemStyle: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: 16,
-      alignItems: 'center',
-      borderColor: Colors.backgroundColor,
-      borderBottomWidth: 1,
-      paddingVertical: 12,
-    },
-    bottomSheetItemLeftStyle: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-    },
-    bottomSheetItemTextStyle: {
-      fontSize: 18,
-      lineHeight: 24,
-      fontWeight: '700',
-      color: Colors.darkGray,
-      fontFamily: 'Uni Neue',
-    },
-    bottomSheetItemCountStyle: {
-      backgroundColor: Colors.smokeWhite,
-      borderRadius: 100,
-      paddingVertical: 4,
-      paddingHorizontal: 6,
-      flexDirection: 'row',
-      gap: 4,
-      alignItems: 'center',
-    },
-    bottomSheetItemCountTextStyle: {
-      fontSize: 14,
-      lineHeight: 16,
-      fontFamily: 'Uni Neue',
-      fontWeight: '700',
-      color: Colors.unfocusedColor,
-      textAlign: 'center',
-    },
-    bottomSheetItemTwoStyle: {
-      borderRadius: 6,
-      paddingVertical: 2,
-      paddingHorizontal: 8,
-      height: 20,
-      gap: 4,
-    },
-    bottomSheetItemCountTwoTextStyle: {
-      fontSize: 14,
-      lineHeight: 16,
-      fontFamily: 'Uni Neue',
-      fontWeight: '700',
-    },
-    bottomSheetBottomContainerStyle: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 16,
-      paddingTop: 16,
-      paddingHorizontal: 16,
-      borderColor: Colors.backgroundColor,
-      justifyContent: 'space-between',
-    },
-    bottomSheetBottomTextStyle: {
-      fontSize: 18,
-      lineHeight: 24,
-      fontWeight: '700',
-      color: Colors.greenColor,
-      fontFamily: 'Uni Neue',
-      paddingHorizontal: 12,
-      paddingTop: 10,
-      height: 48,
-    },
-    showAllButtonContainer: {
-      flex: 1,
-      backgroundColor: Colors.greenColor,
-      borderColor: Colors.greenColor,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 100,
-      borderWidth: 0.4,
-    },
-    showAllButtonContent: {
-      flexDirection: 'row',
-      gap: 8,
-      height: 48,
-      alignItems: 'center',
-    },
-    showAllButtonText: {
-      textAlign: 'center',
-      color: Colors.white,
-      fontSize: 18,
-    },
-  });
 
   const screenHeight = Dimensions.get('window').height;
 
@@ -287,3 +186,110 @@ export const FilterBottomSheet = ({
     </CustomBottomSheet>
   );
 };
+
+const styles = StyleSheet.create({
+  bottomSheetTopStyle: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    height: 'auto',
+  },
+  bottomSheetTopContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderColor: Colors.backgroundColor,
+    borderBottomWidth: 1,
+  },
+  bottomSheetItemStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    borderColor: Colors.backgroundColor,
+    borderBottomWidth: 1,
+    paddingVertical: 12,
+  },
+  bottomSheetItemLeftStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  bottomSheetItemTextStyle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: '700',
+    color: Colors.darkGray,
+    fontFamily: 'Uni Neue',
+  },
+  bottomSheetItemCountStyle: {
+    backgroundColor: Colors.smokeWhite,
+    borderRadius: 100,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
+  },
+  bottomSheetItemCountTextStyle: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontFamily: 'Uni Neue',
+    fontWeight: '700',
+    color: Colors.unfocusedColor,
+    textAlign: 'center',
+  },
+  bottomSheetItemTwoStyle: {
+    borderRadius: 6,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    height: 20,
+    gap: 4,
+  },
+  bottomSheetItemCountTwoTextStyle: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontFamily: 'Uni Neue',
+    fontWeight: '700',
+  },
+  bottomSheetBottomContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    borderColor: Colors.backgroundColor,
+    justifyContent: 'space-between',
+  },
+  bottomSheetBottomTextStyle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: '700',
+    color: Colors.greenColor,
+    fontFamily: 'Uni Neue',
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    height: 48,
+  },
+  showAllButtonContainer: {
+    flex: 1,
+    backgroundColor: Colors.greenColor,
+    borderColor: Colors.greenColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    borderWidth: 0.4,
+  },
+  showAllButtonContent: {
+    flexDirection: 'row',
+    gap: 8,
+    height: 48,
+    alignItems: 'center',
+  },
+  showAllButtonText: {
+    textAlign: 'center',
+    color: Colors.white,
+    fontSize: 18,
+  },
+});

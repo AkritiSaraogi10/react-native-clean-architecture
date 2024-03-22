@@ -1,12 +1,17 @@
-import * as React from 'react';
-import {DimensionValue, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  DimensionValue,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Icon, SegmentedButtons} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import Colors from '../../../core/styles/app_colors';
+import { Dispatch } from 'react';
 
 interface ISegmentBarProps {
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  setValue: Dispatch<React.SetStateAction<string>>;
   buttons: IButtonType[];
 }
 
@@ -36,7 +41,10 @@ const CustomSegmentBar = ({value, setValue, buttons}: ISegmentBarProps) => {
                 borderTopLeftRadius: 8,
                 borderWidth: 0,
                 elevation: value === button.value ? 5 : 0,
-                backgroundColor: value === button.value ? Colors.white : Colors.lightSmokeWhite,
+                backgroundColor:
+                  value === button.value
+                    ? Colors.white
+                    : Colors.lightSmokeWhite,
                 width: '100%' as DimensionValue | undefined,
               },
               icon: () =>

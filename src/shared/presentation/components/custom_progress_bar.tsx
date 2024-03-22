@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   DimensionValue,
   StyleProp,
@@ -36,28 +35,6 @@ const CustomProgressBar = ({
     return `${value}%`;
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      padding: 10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    progressBar: {
-      flex: 1,
-      flexDirection: 'row',
-      marginRight: 10,
-      width: '100%',
-    },
-    progressPercentage: {
-      height: 4,
-    },
-    text: {
-      fontSize: 12,
-      width: 30,
-    },
-  });
-
   return indeterminate ? (
     <View>
       <ProgressBar indeterminate={indeterminate} color={fillColor} />
@@ -80,5 +57,27 @@ const CustomProgressBar = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  progressBar: {
+    flex: 1,
+    flexDirection: 'row',
+    marginRight: 10,
+    width: '100%',
+  },
+  progressPercentage: {
+    height: 4,
+  },
+  text: {
+    fontSize: 12,
+    width: 30,
+  },
+});
 
 export default CustomProgressBar;
