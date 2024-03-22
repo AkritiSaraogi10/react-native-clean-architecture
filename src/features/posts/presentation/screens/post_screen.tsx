@@ -8,7 +8,7 @@ export default function PostScreen() {
     posts,
     handleAddPost,
     handleDeletePost,
-    formFields2,
+    formFields,
     handleInputChange2,
     isEdit,
     handleEditOpen,
@@ -23,9 +23,8 @@ export default function PostScreen() {
   // Function to render each post item UI
   const renderItem = (item: IPost, index: number) => {
     return (
-      <View>
+      <View key={item?._id?.toString()}>
         <View
-          key={item?._id?.toString()}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -35,7 +34,13 @@ export default function PostScreen() {
             marginBottom: 8,
             backgroundColor: '#E1DFDD',
           }}>
-          <Text onPress={() => handleEditOpen(index)}>{item.title}</Text>
+          <Text
+            style={{flexBasis: '70%'}}
+            onPress={() => handleEditOpen(index)}>
+            {item.title}
+          </Text>
+
+          <Button title="Edit" onPress={() => handleEditOpen(index)} />
 
           <Button
             title="Delete"
@@ -46,7 +51,6 @@ export default function PostScreen() {
         {isEdit === index && (
           <View>
             <TextInput
-              key={item?._id?.toString()}
               style={{marginBottom: 10, padding: 10, borderBottomWidth: 1}}
               value={item?.title}
               onChangeText={text =>
@@ -69,7 +73,7 @@ export default function PostScreen() {
         Post Screen
       </Text>
       <View style={{marginHorizontal: 20, marginTop: 20}}>
-        {formFields2.map((field, index) => (
+        {formFields.map((field, index) => (
           <TextInput
             key={field.key}
             style={{marginBottom: 10, padding: 10, borderBottomWidth: 1}}
@@ -78,7 +82,7 @@ export default function PostScreen() {
             onChangeText={text => handleInputChange2(index, text)}
           />
         ))}
-        <Button title="Add Post" onPress={() => handleAddPost(formFields2)} />
+        <Button title="Add Post" onPress={() => handleAddPost(formFields)} />
       </View>
 
       <ScrollView style={{height: 400, marginTop: 20, marginHorizontal: 20}}>

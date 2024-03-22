@@ -20,6 +20,7 @@ const postRepositoryImpl = new PostRepositoryImpl(
   postDataAPIImp,
   postRealmService,
 );
+
 const {useRealm} = RealmContext;
 let service: PostService | PostRepositoryImpl = postRealmService;
 // Custom hook to manage state and data for the post screen
@@ -28,7 +29,7 @@ const usePostScreenData = () => {
   const realm = useRealm(); // Accessing Realm context and listener from RealmContext
   const internet = useSelector((state: any) => state.internet.isConnected);
 
-  const [formFields2, setFormFields2] = useState<IFields[]>(initialState);
+  const [formFields, setFormFields] = useState<IFields[]>(initialState);
   const [editIndex, setEditIndex] = useState(NaN);
 
   useEffect(() => {
@@ -36,28 +37,10 @@ const usePostScreenData = () => {
       apiServiceInstance: postRepositoryImpl,
       realmServiceInstance: postRealmService,
     });
-  }, [internet]);
 
-  useEffect(() => {
-    const listener = (
-      collection: OrderedCollection<PostSchema>,
-      changes: any,
-    ) => {
-      const posts: IPost[] = collection.map((item: any) => {
-        return PostDto.fromJson(item);
-      });
-      console.log('changes', changes);
-      setPosts(posts);
-    };
-
-    // internet service should not expect the listener.
-    // this should be addressed
     const fetchData = async () => {
       try {
-        // if the service is realm or api
-        if (service instanceof PostService) {
-          await service.getPosts(listener);
-        } else {
+        if (service instanceof PostRepositoryImpl) {
           const data = await service.getPosts();
           setPosts(data);
         }
@@ -65,9 +48,42 @@ const usePostScreenData = () => {
         console.log('error', e);
       }
     };
+
+    if (internet) {
+      fetchData();
+    }
+  }, [internet]);
+
+  useEffect(() => {
+    let col: OrderedCollection<PostSchema>;
+    const listener = (
+      collection: OrderedCollection<PostSchema>,
+      changes: any,
+    ) => {
+      col = collection;
+      const posts: IPost[] = collection.map((item: any) => {
+        return PostDto.fromJson(item);
+      });
+      console.log('changes', changes);
+      setPosts(posts);
+    };
+    // internet service should not expect the listener.
+    // this should be addressed
+    const fetchData = async () => {
+      try {
+        // if the service is realm
+        if (service instanceof PostService) {
+          await service.getPosts(listener);
+        }
+      } catch (e) {
+        console.log('error', e);
+      }
+    };
+
     fetchData();
+
     return () => {
-      realm.removeAllListeners();
+      col.removeAllListeners();
     };
   }, []);
 
@@ -99,13 +115,13 @@ const usePostScreenData = () => {
 
   const handleEditSave = (id: string) => {
     const postChanged = posts.filter(p => p._id.toString() === id)[0];
-    service.updatePost(postChanged);
+    service.updatePost(postChanged as PostSchema);
   };
 
   const handleDeletePost = (id: string) => service.deletePost(id ?? '');
 
   const handleInputChange2 = (key: number, value: string) => {
-    setFormFields2(prev => {
+    setFormFields(prev => {
       const copy = [...prev];
       copy[key].value = value;
       return copy;
@@ -116,8 +132,8 @@ const usePostScreenData = () => {
     posts,
     handleAddPost,
     handleDeletePost,
-    formFields2,
-    setFormFields2,
+    formFields,
+    setFormFields,
     handleInputChange2,
     isEdit: editIndex,
     handleEditOpen,
