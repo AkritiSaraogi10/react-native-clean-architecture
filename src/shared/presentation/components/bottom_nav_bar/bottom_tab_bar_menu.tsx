@@ -4,10 +4,11 @@ import {
   BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import { Button, Text, View } from "react-native";
-import { TabBar } from "./bottom_tab_bar";
+import BottomTabBar from "./bottom_tab_bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { AppStrings } from "../../../../core/exports";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -35,7 +36,6 @@ type HomeProps = {
 function HomeScreens({ navigation }: HomeProps) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
       <Button
         title="HomeScreen 1"
         onPress={() => navigation.navigate('HomeScreen 1')}
@@ -52,27 +52,28 @@ function HomeTabs() {
   return (
     <View style={{ flex: 1, position: "relative" }}>
       <Tab.Navigator backBehavior="history"
-        tabBar={(props: BottomTabBarProps) => <TabBar {...props} />}>
+        tabBar={(props: BottomTabBarProps) => <BottomTabBar {...props} />}>
         <Tab.Screen name="Home" component={HomeScreens} options={{
-          tabBarLabel: 'Home', headerShown: false,
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: AppStrings.home, headerShown: false,
+          tabBarIcon: ({ color }) => (
             <MaterialIcon name="home" size={24} color={color} />
           ),
         }} />
         <Tab.Screen name="Adjustments" component={EmptyScreen} options={{
-          tabBarLabel: 'Adjustments', headerShown: false,
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: AppStrings.adjustments, headerShown: false,
+          tabBarIcon: ({ color }) => (
             <MaterialIcon name="adjust" size={24} color={color} />
           ),
         }} />
         <Tab.Screen name="Feed" component={EmptyScreen} options={{
-          tabBarLabel: 'Feed', headerShown: false,
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabel: AppStrings.feed, headerShown: false,
+          tabBarIcon: ({ color }) => (
             <MaterialIcon name="feed" size={24} color={color} />
           ),
         }} />
         <Tab.Screen name="Settings" component={EmptyScreen} options={{
-          tabBarLabel: 'Settings', headerShown: false, tabBarIcon: ({ color, size }) => (
+          tabBarLabel: AppStrings.settings, headerShown: false,
+          tabBarIcon: ({ color }) => (
             <MaterialIcon name="settings" size={24} color={color} />
           )
         }} />
@@ -81,7 +82,7 @@ function HomeTabs() {
   );
 };
 
-function AppNav() {
+function AppNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -93,8 +94,4 @@ function AppNav() {
   );
 }
 
-export default AppNav;
-//Usage in App.tsx
-{/* <SafeAreaProvider>
-  <AppNav />
-</SafeAreaProvider> */}
+export default AppNavigation;

@@ -31,7 +31,7 @@ const CustomCard = ({
     return (
         <View style={[styles.viewContainer, { borderRadius: borderRadius }]}>
             <TouchableOpacity onPress={onCardPress}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={styles.viewStyle}>
                     <View style={styles.leftIconContainer}>
                         {leftIcon}
                     </View>
@@ -59,6 +59,9 @@ const CustomCard = ({
 };
 
 const styles = StyleSheet.create({
+    viewStyle: {
+        flexDirection: 'row'
+    },
     titleWithSubtitle: {
         fontSize: 18,
         fontWeight: '700',
