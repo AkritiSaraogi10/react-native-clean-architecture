@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Colors from '../../../core/styles/app_colors';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface dropdownInput {
     dropDownList: { label: string, value: string | number }[];
@@ -17,10 +18,11 @@ export const CustomDropDown = ({
     const [showDropDown, setShowDropDown] = useState(false);
     const [isFocus, setIsFocus] = useState(false);
 
+
     const renderLabel = () => {
         if (value || isFocus) {
             return (
-                <Text style={[styles.label, isFocus && { color: Colors.greenColor }]}>
+                <Text style={[styles.label, { color: isFocus ? Colors.greenColor : Colors.black }]}>
                     Label
                 </Text>
             );
@@ -44,7 +46,16 @@ export const CustomDropDown = ({
                 selectedTextStyle={
                     styles.selectedTextStyle
                 }
-                style={[styles.dropdown, isFocus && { borderColor: Colors.greenColor }]}
+                renderRightIcon={() => (
+                    <AntDesign
+                        name={showDropDown ? "caretdown" : "caretup"}
+                        size={12}
+                    />
+                )}
+                style={[styles.dropdown, {
+                    borderColor: isFocus ? Colors.greenColor : Colors.inactiveBorderColor,
+                    borderWidth: isFocus ? 2 : 1
+                }]}
             />
         </View>
 
@@ -66,15 +77,14 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         height: 60,
-        borderColor: 'gray',
-        borderWidth: 2,
-        borderRadius: 8,
+        borderRadius: 4,
         paddingHorizontal: 8,
     },
     selectedTextStyle: {
         fontSize: 16,
         fontWeight: '700',
-        paddingLeft: 10
+        paddingLeft: 10,
+        color: Colors.black,
     },
     label: {
         position: 'absolute',
@@ -84,6 +94,7 @@ const styles = StyleSheet.create({
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 14,
+        fontWeight: '700'
     },
 
 });

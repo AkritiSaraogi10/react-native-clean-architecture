@@ -7,9 +7,10 @@ interface ICustomTextFieldProps {
     placeholder: string;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
+    secureTextEntry?: boolean
 }
 
-const Input = ({ label, placeholder, leftIcon, rightIcon }: ICustomTextFieldProps) => {
+const Input = ({ label, placeholder, leftIcon, rightIcon, secureTextEntry }: ICustomTextFieldProps) => {
     const [focus, setFocus] = useState(false);
     return (
         <View>
@@ -32,15 +33,12 @@ const Input = ({ label, placeholder, leftIcon, rightIcon }: ICustomTextFieldProp
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={Colors.inactiveBorderColor}
-                    style={{
-                        fontSize: 16,
-                        fontWeight: '700',
-                        flex: 1,
-                        padding: 10
-                    }}
+                    style={styles.textInputStyle}
                     focusable
                     cursorColor={Colors.greenColor}
                     onFocus={() => setFocus(true)}
+                    secureTextEntry={secureTextEntry}
+
                 />
                 {rightIcon}
             </View>
@@ -69,6 +67,12 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         flexDirection: 'row',
     },
+    textInputStyle: {
+        fontSize: 16,
+        fontWeight: '700',
+        flex: 1,
+        padding: 10
+    }
 });
 
 export default Input;
