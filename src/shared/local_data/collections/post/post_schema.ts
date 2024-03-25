@@ -11,7 +11,11 @@ class PostSchema extends Realm.Object {
   title!: string;
   userId!: string;
   body!: string;
+  private _realm!: Realm;
 
+  public set realm(realm: Realm) {
+    this._realm = realm;
+  }
   // Static schema definition for the PostSchema
   static schema: ObjectSchema = {
     name: SCHEMA_NAMES.POST, // Name of the schema obtained from SCHEMA_NAMES constant
@@ -23,7 +27,15 @@ class PostSchema extends Realm.Object {
       body: 'string',
     },
   };
-  [key: string]: unknown;
+
+  static fromJSON(realm: Realm, json: Record<string, any>): PostSchema {
+    return new PostSchema(realm, {
+      _id: json._id,
+      title: json.title,
+      userId: json.userId,
+      body: json.body,
+    });
+  }
 }
 
 export default PostSchema;

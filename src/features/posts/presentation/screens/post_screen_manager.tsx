@@ -1,17 +1,21 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import AxiosOperations from '../../../../core/network/axios/axios_operations';
-import {RealmContext} from '../../../../shared/local_data/realm_config';
 import PostService from '../../../../shared/local_data/collections/post/post_service';
 import {PostRepositoryImpl} from '../../data/repository/post_repository_impl';
 import PostDataAPIImp from '../../data/data_sources/post_data_api_impl';
 import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
-import {BSON, OrderedCollection} from 'realm';
-import {handleInternetAvailability} from '../../../../core/utils/selector';
+import {
+  BSON,
+  CollectionChangeCallback,
+  OrderedCollection,
+  Results,
+} from 'realm';
 import {IPost} from '../../domain/entities/post_entity';
 import {initialState} from '../interface/post_screen_fields';
 import PostDto from '../../data/dto/post_dto';
 import {IFields} from '../../../../core/types';
 import {useSelector} from 'react-redux';
+import {PostsUseCase} from '../../domain/usecases/get_post_usecase';
 
 const postRealmService = PostService.getInstance();
 const axiosOperations = new AxiosOperations();
@@ -20,75 +24,48 @@ const postRepositoryImpl = new PostRepositoryImpl(
   postDataAPIImp,
   postRealmService,
 );
+const postUseCase = new PostsUseCase(postRepositoryImpl);
 
-const {useRealm} = RealmContext;
-let service: PostService | PostRepositoryImpl = postRealmService;
+let listener: CollectionChangeCallback<PostSchema, [number, PostSchema]>;
+
 // Custom hook to manage state and data for the post screen
 const usePostScreenData = () => {
   const [posts, setPosts] = useState<IPost[]>([]); // State for storing posts
-  const realm = useRealm(); // Accessing Realm context and listener from RealmContext
+  const [editedPosts, setEditedPosts] = useState<IPost[]>([]);
   const internet = useSelector((state: any) => state.internet.isConnected);
 
   const [formFields, setFormFields] = useState<IFields[]>(initialState);
   const [editIndex, setEditIndex] = useState(NaN);
 
   useEffect(() => {
-    service = handleInternetAvailability({
-      apiServiceInstance: postRepositoryImpl,
-      realmServiceInstance: postRealmService,
-    });
+    let posts: Results<PostSchema>;
 
-    const fetchData = async () => {
-      try {
-        if (service instanceof PostRepositoryImpl) {
-          const data = await service.getPosts();
-          setPosts(data);
-        }
-      } catch (e) {
-        console.log('error', e);
-      }
-    };
-
-    if (internet) {
-      fetchData();
-    }
-  }, [internet]);
-
-  useEffect(() => {
-    let col: OrderedCollection<PostSchema>;
-    const listener = (
-      collection: OrderedCollection<PostSchema>,
-      changes: any,
-    ) => {
-      col = collection;
+    listener = (collection: OrderedCollection<PostSchema>, changes: any) => {
       const posts: IPost[] = collection.map((item: any) => {
         return PostDto.fromJson(item);
       });
       console.log('changes', changes);
       setPosts(posts);
+      setEditedPosts(posts);
     };
-    // internet service should not expect the listener.
-    // this should be addressed
+
     const fetchData = async () => {
-      try {
-        // if the service is realm
-        if (service instanceof PostService) {
-          await service.getPosts(listener);
-        }
-      } catch (e) {
-        console.log('error', e);
-      }
+      posts = await postUseCase.getPosts();
+      posts.removeAllListeners();
+      posts.addListener(listener);
     };
 
     fetchData();
 
     return () => {
-      col.removeAllListeners();
+      if (posts) {
+        posts.removeAllListeners();
+      }
     };
-  }, []);
+  }, [internet]);
 
   const handleAddPost = (fields: IFields[]) => {
-    const newp = fields.reduce(
+    const newPost = fields.reduce(
       (prev, curr) => {
         return {...prev, [curr.key]: curr.value};
       },
@@ -97,8 +74,7 @@ const usePostScreenData = () => {
         userId: Math.random().toString(),
       },
     );
-    console.log(newp);
-    service.addPost(newp as PostSchema);
+    postRepositoryImpl.addPost(newPost as PostSchema);
   };
 
   const handleEditOpen = (index: number) => {
@@ -106,19 +82,20 @@ const usePostScreenData = () => {
   };
 
   const handleEditChange = (id: string, changes: any) => {
-    const postChanged = posts.findIndex(p => p._id.toString() === id);
-    const edited = {...posts[postChanged], ...changes};
-    const newPosts = [...posts];
+    const postChanged = editedPosts.findIndex(p => p._id.toString() === id);
+    const edited = {...editedPosts[postChanged], ...changes};
+    const newPosts = [...editedPosts];
     newPosts[postChanged] = edited;
-    setPosts(newPosts);
+    setEditedPosts(newPosts);
   };
 
   const handleEditSave = (id: string) => {
-    const postChanged = posts.filter(p => p._id.toString() === id)[0];
-    service.updatePost(postChanged as PostSchema);
+    const postChanged = editedPosts.filter(p => p._id.toString() === id)[0];
+    postUseCase.updatePost(postChanged as PostSchema);
   };
 
-  const handleDeletePost = (id: string) => service.deletePost(id ?? '');
+  const handleDeletePost = (id: string) =>
+    postRepositoryImpl.deletePost(id ?? '');
 
   const handleInputChange2 = (key: number, value: string) => {
     setFormFields(prev => {
@@ -130,6 +107,7 @@ const usePostScreenData = () => {
 
   return {
     posts,
+    editedPosts,
     handleAddPost,
     handleDeletePost,
     formFields,

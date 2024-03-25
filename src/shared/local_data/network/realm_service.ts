@@ -16,7 +16,9 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
 
     return RealmService.instance; // Returning the instance
   }
-
+  public get realmInstance() {
+    return this.realm;
+  }
   // Static method to get a singleton instance of RealmService
   static getInstance<T extends Realm.Object>(schema: Realm.ObjectSchema[]) {
     return this.instance || new RealmService<T>(schema); // Returning existing instance or creating a new one

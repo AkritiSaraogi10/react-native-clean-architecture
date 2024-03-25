@@ -1,4 +1,4 @@
-import {BSON} from 'realm';
+import {Results} from 'realm';
 import RealmService from '../../network/realm_service';
 import {SCHEMA_NAMES} from '../../schema_names'; // Importing SCHEMA_NAMES constant
 import {IPost} from '../../../../features/posts/domain/entities/post_entity';
@@ -56,16 +56,13 @@ class PostService {
   }
 
   // Method to asynchronously retrieve posts from the Realm database
-  async getPosts2(
-    listener: CollectionChangeCallback<PostSchema, [number, PostSchema]>,
-  ): Promise<IPost[]> {
+  async getPosts2(): Promise<Results<PostSchema>> {
     // Fetching all posts from Realm database
     const data = this.realmService.fetchAllObjectsFromRealm(
       PostSchema.schema.name,
     );
-    data.addListener(listener); // Adding listener to data changes
-    const posts: IPost[] = [];
-    return posts; // Returning posts as IPost entity (bcoz presentation layer expects IPost return type before storing to local state)
+
+    return data; // Returning posts as IPost entity (bcoz presentation layer expects IPost return type before storing to local state)
   }
 }
 

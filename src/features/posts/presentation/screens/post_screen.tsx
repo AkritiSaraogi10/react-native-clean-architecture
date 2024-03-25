@@ -6,6 +6,7 @@ import {IPost} from '../../domain/entities/post_entity';
 export default function PostScreen() {
   const {
     posts,
+    editedPosts,
     handleAddPost,
     handleDeletePost,
     formFields,
@@ -34,11 +35,7 @@ export default function PostScreen() {
             marginBottom: 8,
             backgroundColor: '#E1DFDD',
           }}>
-          <Text
-            style={{flexBasis: '70%'}}
-            onPress={() => handleEditOpen(index)}>
-            {item.title}
-          </Text>
+          <Text style={{flexBasis: '70%'}}>{item.title}</Text>
 
           <Button title="Edit" onPress={() => handleEditOpen(index)} />
 
@@ -52,7 +49,7 @@ export default function PostScreen() {
           <View>
             <TextInput
               style={{marginBottom: 10, padding: 10, borderBottomWidth: 1}}
-              value={item?.title}
+              value={editedPosts[index]?.title}
               onChangeText={text =>
                 handleEditChange(item._id.toString(), {title: text})
               }

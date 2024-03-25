@@ -1,30 +1,36 @@
+import {Results} from 'realm';
 import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
 import PostService from '../../../../shared/local_data/collections/post/post_service';
-import {IPost} from '../../domain/entities/post_entity'; // Importing IPost interface
-import {PostRepository} from '../../domain/repository/post_respository'; // Importing PostRepository interface
-import {PostDataSource} from '../data_sources/post_data_source'; // Importing PostDataSource interface
-import PostDto from '../dto/post_dto';
+import store from '../../../../shared/presentation/redux/store';
+import {IPost} from '../../domain/entities/post_entity';
+import {PostRepository} from '../../domain/repository/post_respository';
+import {PostDataSource} from '../data_sources/post_data_source';
 
 // Implementation of the PostRepository interface
 export class PostRepositoryImpl implements PostRepository {
-  dataSource: PostDataSource; // Data source(Returns API response) for retrieving post data
-  postService: PostService; //realm service
+  private dataSource: PostDataSource; // Data source(Returns API response) for retrieving post data
+  private postService: PostService; //realm service
 
-  // _ in names should be used for private variables only
-  constructor(_datasource: PostDataSource, _postService: PostService) {
-    this.dataSource = _datasource; // Initializing data source
-    this.postService = _postService;
+  constructor(datasource: PostDataSource, postService: PostService) {
+    this.dataSource = datasource;
+    this.postService = postService;
   }
 
-  // Method to retrieve multiple posts
-  async getPosts(): Promise<IPost[]> {
-    const result = await this.dataSource.getPosts(); // Getting posts from data source
-    const posts: IPost[] = result.results.map((item: any) => {
-      // Mapping Realm objects to IPost entities
-      return PostDto.fromJson(item);
-    });
-    this.postService.addPosts(posts as unknown as PostSchema[]);
-    return posts; // Returning posts
+  async getPosts(): Promise<Results<PostSchema>> {
+    const internet = store.getState().internet.isConnected;
+
+    if (internet) {
+      const result = await this.dataSource.getPosts();
+      const posts = result.results.map((item: any) => {
+        // return PostSchema.fromJSON( item);
+        console.log(item);
+      });
+      this.postService.addPosts(posts as unknown as PostSchema[]);
+    }
+
+    const postFromDB = this.postService.getPosts2();
+
+    return postFromDB;
   }
 
   // Method to retrieve a single post
@@ -34,15 +40,37 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   // Method to add a new post (not implemented in this example)
-  addPost(postData: IPost): string {
-    return '';
+  async addPost(postData: PostSchema): Promise<void> {
+    const internet = store.getState().internet.isConnected;
+
+    // TODO: add api logic
+    if (internet) {
+      //  post to with api
+      // this.dataSource.
+    } else {
+      this.postService.addPost(postData);
+    }
   }
 
   // Method to delete a post (not implemented in this example)
-  deletePost(postId: string): string {
-    return '';
+  async deletePost(postId: string): Promise<void> {
+    const internet = store.getState().internet.isConnected;
+    // TODO: add api logic
+    if (internet) {
+    } else {
+      this.postService.deletePost(postId);
+    }
   }
 
   // Method to update a post in the Realm database
-  updatePost(postData: Partial<IPost>) {}
+  async updatePost(postData: Partial<PostSchema>): Promise<void> {
+    const internet = store.getState().internet.isConnected;
+    // TODO: add api logic
+    if (internet) {
+      // replace this.
+      return this.postService.updatePost(postData);
+    } else {
+      return this.postService.updatePost(postData);
+    }
+  }
 }

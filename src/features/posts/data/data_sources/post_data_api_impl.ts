@@ -8,12 +8,10 @@ import {ServerException} from '../../../../core/errors/server_exceptions';
 class PostDataApiImpl implements PostDataSource {
   axiosOperations: AxiosOperations; // AxiosOperations instance for making HTTP requests
 
-  // Constructor to initialize AxiosOperations instance
   constructor(axiosOperations: AxiosOperations) {
     this.axiosOperations = axiosOperations;
   }
 
-  // Method to retrieve multiple posts from the API
   async getPosts(): Promise<ApiResponse<PostDto[]>> {
     try {
       const results: AxiosResponse<any> = await this.axiosOperations.get(
@@ -32,7 +30,6 @@ class PostDataApiImpl implements PostDataSource {
     }
   }
 
-  // Method to retrieve a single post from the API
   async getPost(): Promise<ApiResponse<PostDto>> {
     try {
       const results: AxiosResponse<any> = await this.axiosOperations.get(
