@@ -7,10 +7,10 @@ interface ICustomTextFieldProps {
     placeholder: string;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
-    secureTextEntry?: boolean
+    hidePassword?: boolean;
 }
 
-const Input = ({ label, placeholder, leftIcon, rightIcon, secureTextEntry }: ICustomTextFieldProps) => {
+const Input = ({ label, placeholder, leftIcon, rightIcon, hidePassword }: ICustomTextFieldProps) => {
     const [focus, setFocus] = useState(false);
     return (
         <View>
@@ -37,8 +37,7 @@ const Input = ({ label, placeholder, leftIcon, rightIcon, secureTextEntry }: ICu
                     focusable
                     cursorColor={Colors.greenColor}
                     onFocus={() => setFocus(true)}
-                    secureTextEntry={secureTextEntry}
-
+                    secureTextEntry={hidePassword}
                 />
                 {rightIcon}
             </View>

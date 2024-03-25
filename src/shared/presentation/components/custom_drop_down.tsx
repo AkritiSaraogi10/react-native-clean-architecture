@@ -17,8 +17,6 @@ export const CustomDropDown = ({
 }: dropdownInput) => {
     const [showDropDown, setShowDropDown] = useState(false);
     const [isFocus, setIsFocus] = useState(false);
-
-
     const renderLabel = () => {
         if (value || isFocus) {
             return (
@@ -38,7 +36,6 @@ export const CustomDropDown = ({
                 data={dropDownList}
                 labelField="label"
                 valueField="value"
-                onBlur={() => setIsFocus(false)}
                 onChange={onChange}
                 onFocus={() => setIsFocus(true)}
                 itemTextStyle={styles.itemTextStyle}
