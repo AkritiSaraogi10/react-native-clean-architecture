@@ -62,5 +62,6 @@ const Colors = {
   frost: '#DEE6C5',
   leafGreen: '#394D00',
   iconGreen: '#638118',
+  inactiveBorderColor: '#909090'
 };
 export default Colors;
