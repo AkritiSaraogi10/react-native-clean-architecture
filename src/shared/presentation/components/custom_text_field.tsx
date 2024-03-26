@@ -8,10 +8,18 @@ interface ICustomTextFieldProps {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     hidePassword?: boolean;
+    onChangeText: (text: string) => void;
+    text: string
 }
 
-const Input = ({ label, placeholder, leftIcon, rightIcon, hidePassword }: ICustomTextFieldProps) => {
+const Input = ({ label, placeholder, leftIcon, rightIcon, hidePassword, onChangeText, text }: ICustomTextFieldProps) => {
     const [focus, setFocus] = useState(false);
+
+    const handleBlur = () => {
+        if (!text) {
+            setFocus(false);
+        }
+    }
     return (
         <View>
             <View style={styles.labelContainer}>
@@ -38,6 +46,9 @@ const Input = ({ label, placeholder, leftIcon, rightIcon, hidePassword }: ICusto
                     cursorColor={Colors.greenColor}
                     onFocus={() => setFocus(true)}
                     secureTextEntry={hidePassword}
+                    onChangeText={onChangeText}
+                    onBlur={handleBlur}
+                    value={text}
                 />
                 {rightIcon}
             </View>
