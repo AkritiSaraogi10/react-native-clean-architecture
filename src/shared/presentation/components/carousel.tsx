@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import Colors from '../../../core/styles/app_colors';
 
@@ -9,6 +9,19 @@ interface ICarousel {
 
 const Carousel = ({ data, renderSliderContent }: ICarousel) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideWidth, setSlideWidth] = useState(Dimensions.get('window').width);
+
+  useEffect(() => {
+    const updateSlideWidth = () => {
+      setSlideWidth(Dimensions.get('window').width);
+    };
+
+    const subscription = Dimensions.addEventListener('change', updateSlideWidth);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const onChange = (nativeEvent: any) => {
     if (nativeEvent) {
@@ -44,7 +57,7 @@ const Carousel = ({ data, renderSliderContent }: ICarousel) => {
         style={styles.wrap}
       >
         {data.map((e: string, index: number) => (
-          <View key={index} style={[styles.slide, { width: Dimensions.get('window').width }]}>
+          <View key={index} style={[styles.slide, { width: slideWidth }]}>
             {renderSliderContent(e)}
           </View>
         ))}
@@ -58,8 +71,8 @@ const Carousel = ({ data, renderSliderContent }: ICarousel) => {
 
 const styles = StyleSheet.create({
   wrap: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.25,
+    height: '35%',
+    backgroundColor: 'red',
   },
   slide: {
     flex: 1,
