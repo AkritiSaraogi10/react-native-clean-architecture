@@ -1,6 +1,5 @@
 import {ColorValue, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-paper';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import CustomScrollView from './custom_scroll_view';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {FilterBottomSheet} from './filter_bottom_sheet';
@@ -10,7 +9,7 @@ interface FilterItem {
   key: string;
   label: string;
   isSelected: boolean;
-  bottomSheet?: { heightPercent: number; backGroundColor?: string };
+  bottomSheet?: { heightPercent: number; backGroundColor?: string; isVisble: boolean };
   filterByOptions?: {
     text: string;
     badgeOne?: {text: string; icon?: IconSource};
@@ -31,7 +30,6 @@ export const HorizantolTabs = ({
   bottomRight,
   listItemTail,
   headerText,
-  bottomSheetRef,
 }: {
   filters: IFilter;
   handleClick: (
@@ -43,7 +41,6 @@ export const HorizantolTabs = ({
   bottomLeftText: string;
   bottomRight: {icon: IconSource; text: string; count?: number};
   headerText: string;
-  bottomSheetRef?: React.RefObject<RBSheet>
 }) => {
   return (
     <CustomScrollView
@@ -71,7 +68,6 @@ export const HorizantolTabs = ({
               <FilterBottomSheet
                 bottomLeftText={bottomLeftText}
                 bottomRight={bottomRight}
-                bottomSheetRef={bottomSheetRef}
                 handleClick={(types, index2) =>
                   handleClick(filter.key, types, index2)
                 }
@@ -79,6 +75,7 @@ export const HorizantolTabs = ({
                 filterOptions={filter.filterByOptions}
                 type={listItemTail}
                 sheetAttributes={filter.bottomSheet}
+                isVisible={filter.bottomSheet.isVisble}
               />
             )}
           </View>
