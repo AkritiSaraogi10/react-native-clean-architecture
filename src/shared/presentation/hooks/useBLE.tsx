@@ -14,6 +14,7 @@ interface BluetoothLowEnergyApi {
 
 export default function useBLE(): BluetoothLowEnergyApi {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
+
   const requestPermissions = async (callback: PermissionCallback) => {
     if (Platform.OS === 'android') {
       const result = await PermissionsAndroid.requestMultiple([
@@ -37,57 +38,52 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1;
 
-  const scanForDevices = async() => {
-    bleManager.startDeviceScan(null, null, (error, device) => {
-      if (error) {
-        console.log(error);
+  const readDeviceName = async (device: Device) => {
+    try {
+      await device.connect();
+      const deviceTemp =
+        await bleManager.discoverAllServicesAndCharacteristicsForDevice(
+          device.id,
+        );
+      const nameCharacteristic = (await deviceTemp.services()).find(
+        async service =>
+          (await service.characteristics()).some(
+            char => char.uuid === 'characteristic UUID for device name',
+          ),
+      );
+      if (nameCharacteristic) {
+        console.log(nameCharacteristic, 'name characteristic');
+      } else {
+        console.log('Device name characteristic not found');
       }
+    } catch (error) {
+      console.error('Error reading device name:', error);
+    } finally {
+    }
+  };
 
-      if (device && device.id && device.id !== '') {
-        setAllDevices(prevState => {
-          if (!isDuplicateDevice(prevState, device)) {
-            return [...prevState, device];
-          }
-          return prevState;
-        });
-        console.log(device.id);
-        // try {
-        //     bleManager.connectToDevice(device.id).then(device1=>{ 
+  const scanForDevices = async () => {
+    bleManager.startDeviceScan(
+      null,
+      {allowDuplicates: false},
+      (error, device) => {
+        if (error) {
+          console.log(error);
+        }
 
-        //         console.log('Connected to device:', device1.name);  
-                
-        //         // Add your logic for handling the connected device 
-                
-        //         return device.discoverAllServicesAndCharacteristics(); 
-        //     })
-        // } catch (error) {
-        //     console.log(error);
-            
-        // }
-        // bleManager.stopDeviceScan()
-        
-    //    device
-    //       .connect()
-    //       .then(device1 => {
-    //         console.log(device1.isConnectable, 'device 1');
-    //         console.log(device1.discoverAllServicesAndCharacteristics());
-            
-            
-    //         return device1.discoverAllServicesAndCharacteristics();
-    //       })
-    //       .then(device2 => {
-    //         console.log(device2.id, 'device3');
-            
-    //         // Do work on device with services and characteristics
-    //       })
-    //       .catch(error2 => {
-    //         console.log(error2, 'error2');
-            
-            // Handle errors
-        //   });
-          
-      }
-    });
+        if (device && device.id && device.id !== '') {
+          setAllDevices(prevState => {
+            if (!isDuplicateDevice(prevState, device)) {
+              return [...prevState, device];
+            }
+            return prevState;
+          });
+          readDeviceName(device);
+          console.log(device.id, device.name, device.localName);
+          bleManager.stopDeviceScan();
+        }
+      },
+    );
   };
 
   return {
