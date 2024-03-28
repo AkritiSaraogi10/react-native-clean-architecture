@@ -9,6 +9,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { AppStrings } from "../../../../core/exports";
+import Adjustments from '../../../../../assets/images/adjustments.svg'
+import Home from '../../../../../assets/images/home.svg'
+import Feed from '../../../../../assets/images/feed.svg'
+import Settings from '../../../../../assets/images/settings.svg'
+import PostScreen from "../../../../features/posts/presentation/screens/postScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -56,25 +61,26 @@ function HomeTabs() {
         <Tab.Screen name="Home" component={HomeScreens} options={{
           tabBarLabel: AppStrings.home, headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="home" size={24} color={color} />
+            <Home fill={color} height="24" />
+
           ),
         }} />
         <Tab.Screen name="Adjustments" component={EmptyScreen} options={{
           tabBarLabel: AppStrings.adjustments, headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="adjust" size={24} color={color} />
+            <Adjustments fill={color} height="24" />
           ),
         }} />
         <Tab.Screen name="Feed" component={EmptyScreen} options={{
           tabBarLabel: AppStrings.feed, headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="feed" size={24} color={color} />
+            <Feed fill={color} height="24" />
           ),
         }} />
         <Tab.Screen name="Settings" component={EmptyScreen} options={{
           tabBarLabel: AppStrings.settings, headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="settings" size={24} color={color} />
+            <Settings fill={color} height="24" />
           )
         }} />
       </Tab.Navigator>
