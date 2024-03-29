@@ -4,14 +4,21 @@ import PostService from '../../../../shared/local_data/collections/post/post_ser
 import store from '../../../../shared/presentation/redux/store';
 import {IPost} from '../../domain/entities/post_entity';
 import {PostRepository} from '../../domain/repository/post_respository';
-import {PostDataSource} from '../data_sources/post_data_source';
+import type {PostDataSource} from '../data_sources/post_data_source';
+import PostDto from '../dto/post_dto';
+import {inject, injectable, singleton} from 'tsyringe';
 
 // Implementation of the PostRepository interface
+@singleton()
+@injectable()
 export class PostRepositoryImpl implements PostRepository {
   private dataSource: PostDataSource; // Data source(Returns API response) for retrieving post data
   private postService: PostService; //realm service
 
-  constructor(datasource: PostDataSource, postService: PostService) {
+  constructor(
+    @inject('PostDataSource') datasource: PostDataSource,
+    postService: PostService,
+  ) {
     this.dataSource = datasource;
     this.postService = postService;
   }
@@ -20,15 +27,15 @@ export class PostRepositoryImpl implements PostRepository {
     const internet = store.getState().internet.isConnected;
 
     if (internet) {
-      const result = await this.dataSource.getPosts();
-      const posts = result.results.map((item: any) => {
-        // return PostSchema.fromJSON( item);
-        console.log(item);
+      const result = await this.dataSource.getPosts(); // api call
+      const posts = result.results.map((item: PostDto) => {
+        return PostSchema.fromJSON(item);
       });
-      this.postService.addPosts(posts as unknown as PostSchema[]);
+
+      this.postService.addPosts(posts); // save to db
     }
 
-    const postFromDB = this.postService.getPosts2();
+    const postFromDB = this.postService.getPosts(); // return to screen
 
     return postFromDB;
   }

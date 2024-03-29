@@ -1,27 +1,20 @@
 import {BSON, Results, UpdateMode} from 'realm';
 import {RealmServiceInterface} from './realm_service_abstract';
 import Realm from 'realm';
+import {injectable, singleton} from 'tsyringe';
+import Database from './Database';
 
-// Class implementing the RealmServiceInterface for interacting with a Realm database
+@singleton()
+@injectable()
 class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
   private static instance: RealmService<any>; // Static instance of RealmService
   private realm!: Realm; // Realm instance
 
-  private constructor(schema: Realm.ObjectSchema[]) {
-    // Ensure only one instance of RealmService is created
-    if (!RealmService.instance) {
-      this.realm = new Realm({schema}); // Creating a new Realm instance with provided schema
-      RealmService.instance = this; // Assigning the instance to static variable
-    }
-
-    return RealmService.instance; // Returning the instance
+  constructor(realmDb: Database) {
+    this.realm = realmDb.realmInstance; // Creating a new Realm instance with provided schema
   }
   public get realmInstance() {
     return this.realm;
-  }
-  // Static method to get a singleton instance of RealmService
-  static getInstance<T extends Realm.Object>(schema: Realm.ObjectSchema[]) {
-    return this.instance || new RealmService<T>(schema); // Returning existing instance or creating a new one
   }
 
   // Method to add a single object to the Realm database

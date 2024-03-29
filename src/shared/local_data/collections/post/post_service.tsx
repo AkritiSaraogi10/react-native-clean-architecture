@@ -1,25 +1,18 @@
 import {Results} from 'realm';
 import RealmService from '../../network/realm_service';
-import {SCHEMA_NAMES} from '../../schema_names'; // Importing SCHEMA_NAMES constant
+import {SCHEMA_NAMES} from '../../schema_names';
 import {IPost} from '../../../../features/posts/domain/entities/post_entity';
-import {CollectionChangeCallback} from 'realm'; // Importing CollectionChangeCallback type from Realm
 import PostSchema from './post_schema';
+import {injectable} from 'tsyringe';
 
-// Class responsible for handling post-related operations
+// Class responsible for handling post-related
+@injectable()
 class PostService {
   private static instance: PostService; // Static instance of PostService
   private realmService: RealmService<PostSchema>; // Instance of RealmService for PostSchema
 
-  private constructor() {
-    // Initializing RealmService with PostSchema
-    this.realmService = RealmService.getInstance<PostSchema>([
-      PostSchema.schema,
-    ]);
-  }
-
-  // Method to get a singleton instance of PostService
-  static getInstance() {
-    return this.instance || new PostService();
+  constructor(realmService: RealmService<PostSchema>) {
+    this.realmService = realmService;
   }
 
   // Method to add a post to the Realm database
@@ -43,20 +36,7 @@ class PostService {
   }
 
   // Method to asynchronously retrieve posts from the Realm database
-  async getPosts(
-    listener: CollectionChangeCallback<PostSchema, [number, PostSchema]>,
-  ): Promise<IPost[]> {
-    // Fetching all posts from Realm database
-    const data = this.realmService.fetchAllObjectsFromRealm(
-      PostSchema.schema.name,
-    );
-    data.addListener(listener); // Adding listener to data changes
-    const posts: IPost[] = [];
-    return posts; // Returning posts as IPost entity (bcoz presentation layer expects IPost return type before storing to local state)
-  }
-
-  // Method to asynchronously retrieve posts from the Realm database
-  async getPosts2(): Promise<Results<PostSchema>> {
+  async getPosts(): Promise<Results<PostSchema>> {
     // Fetching all posts from Realm database
     const data = this.realmService.fetchAllObjectsFromRealm(
       PostSchema.schema.name,

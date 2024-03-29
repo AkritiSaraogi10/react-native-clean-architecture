@@ -4,7 +4,9 @@ import {PostDataSource} from './post_data_source';
 import AxiosOperations from '../../../../core/network/axios/axios_operations';
 import PostDto from '../dto/post_dto';
 import {ServerException} from '../../../../core/errors/server_exceptions';
+import {injectable} from 'tsyringe';
 
+@injectable()
 class PostDataApiImpl implements PostDataSource {
   axiosOperations: AxiosOperations; // AxiosOperations instance for making HTTP requests
 

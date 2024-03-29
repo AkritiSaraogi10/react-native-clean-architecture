@@ -9,9 +9,6 @@ export class Fields {
     this.placeholder = placeholder;
     this.value = value;
   }
-
-  validate() {}
-  transform(format: string) {}
 }
 
 export interface IFields {

@@ -1,9 +1,8 @@
-// Make sure Feature Schema and API response (DTO file) keys and types should be same. To avoid issues during local realm and remote DB sync
-
-// Importing necessary modules and dependencies
-import {BSON, ObjectSchema} from 'realm'; // Importing BSON and ObjectSchema from Realm
-import {SCHEMA_NAMES} from '../../schema_names'; // Importing SCHEMA_NAMES constant
-import {Realm} from 'realm'; // Importing Realm class from Realm library
+import {BSON, ObjectSchema} from 'realm';
+import {SCHEMA_NAMES} from '../../schema_names';
+import {Realm} from 'realm';
+import {container, delay} from 'tsyringe';
+import Database from '../../network/Database'; // this causes cyclic import will be fixed later
 
 // Class definition for PostSchema representing a Realm object. (same as of API response)
 class PostSchema extends Realm.Object {
@@ -11,11 +10,8 @@ class PostSchema extends Realm.Object {
   title!: string;
   userId!: string;
   body!: string;
-  private _realm!: Realm;
+  private static _realm: Realm;
 
-  public set realm(realm: Realm) {
-    this._realm = realm;
-  }
   // Static schema definition for the PostSchema
   static schema: ObjectSchema = {
     name: SCHEMA_NAMES.POST, // Name of the schema obtained from SCHEMA_NAMES constant
@@ -27,14 +23,25 @@ class PostSchema extends Realm.Object {
       body: 'string',
     },
   };
+  /**
+   *
+   */
 
-  static fromJSON(realm: Realm, json: Record<string, any>): PostSchema {
-    return new PostSchema(realm, {
-      _id: json._id,
+  static fromJSON(json: Record<string, any>): PostSchema {
+    if (!this._realm) {
+      const realmDb = container.resolve(delay(() => Database));
+      this._realm = realmDb.realmInstance;
+    }
+
+    // type casting as instantiating will create a record in db
+    const obj: PostSchema = {
+      _id: new BSON.ObjectId(json._id), // must remove instantiation after proper db and api
       title: json.title,
       userId: json.userId,
       body: json.body,
-    });
+    } as PostSchema;
+
+    return obj;
   }
 }
 

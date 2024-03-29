@@ -1,8 +1,4 @@
 import {useEffect, useState} from 'react';
-import AxiosOperations from '../../../../core/network/axios/axios_operations';
-import PostService from '../../../../shared/local_data/collections/post/post_service';
-import {PostRepositoryImpl} from '../../data/repository/post_repository_impl';
-import PostDataAPIImp from '../../data/data_sources/post_data_api_impl';
 import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
 import {
   BSON,
@@ -16,15 +12,9 @@ import PostDto from '../../data/dto/post_dto';
 import {IFields} from '../../../../core/types';
 import {useSelector} from 'react-redux';
 import {PostsUseCase} from '../../domain/usecases/get_post_usecase';
+import {container} from 'tsyringe';
 
-const postRealmService = PostService.getInstance();
-const axiosOperations = new AxiosOperations();
-const postDataAPIImp = new PostDataAPIImp(axiosOperations);
-const postRepositoryImpl = new PostRepositoryImpl(
-  postDataAPIImp,
-  postRealmService,
-);
-const postUseCase = new PostsUseCase(postRepositoryImpl);
+const postUseCase = container.resolve(PostsUseCase);
 
 let listener: CollectionChangeCallback<PostSchema, [number, PostSchema]>;
 
@@ -74,7 +64,7 @@ const usePostScreenData = () => {
         userId: Math.random().toString(),
       },
     );
-    postRepositoryImpl.addPost(newPost as PostSchema);
+    postUseCase.addPost(newPost as PostSchema);
   };
 
   const handleEditOpen = (index: number) => {
@@ -94,8 +84,7 @@ const usePostScreenData = () => {
     postUseCase.updatePost(postChanged as PostSchema);
   };
 
-  const handleDeletePost = (id: string) =>
-    postRepositoryImpl.deletePost(id ?? '');
+  const handleDeletePost = (id: string) => postUseCase.deletePost(id ?? '');
 
   const handleInputChange2 = (key: number, value: string) => {
     setFormFields(prev => {

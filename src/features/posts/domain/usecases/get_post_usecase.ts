@@ -1,7 +1,8 @@
 import {Results} from 'realm';
 import {IPost} from '../entities/post_entity';
-import {PostRepository} from '../repository/post_respository';
+import type {PostRepository} from '../repository/post_respository';
 import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
+import {injectable, singleton, inject} from 'tsyringe';
 
 // Interface defining methods for getting posts
 export interface GetPosts {
@@ -10,10 +11,13 @@ export interface GetPosts {
 }
 
 // Implementation of the GetPosts interface
+
+@singleton()
+@injectable()
 export class PostsUseCase implements GetPosts {
   postRepo: PostRepository; // Post repository instance
 
-  constructor(_postRepo: PostRepository) {
+  constructor(@inject('PostRepository') _postRepo: PostRepository) {
     this.postRepo = _postRepo;
   }
 

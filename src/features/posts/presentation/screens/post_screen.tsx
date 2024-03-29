@@ -17,11 +17,6 @@ export default function PostScreen() {
     handleEditChange,
   } = usePostScreenData();
 
-  // Function to render each post item UI -- try to avoid multiple render function as much as possible
-  // for instance this can be separate component called as Post
-  // Destructuring values from the post_screen_utils hook
-
-  // Function to render each post item UI
   const renderItem = (item: IPost, index: number) => {
     return (
       <View key={item?._id?.toString()}>

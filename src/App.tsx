@@ -23,15 +23,13 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
-      console.log('wtf1 ', state);
-
       if (
         ((state.isConnected && state.isInternetReachable) || false) !==
         isConnectedCheck
       ) {
         dispatch(setToastVisible(true));
       }
-      console.log(state.isConnected, '  ', state.isInternetReachable);
+
       dispatch(
         setInternetConnection(
           (state.isConnected && state.isInternetReachable) || false,
@@ -62,7 +60,6 @@ function App(): React.JSX.Element {
         action={{
           label: 'ok',
           onPress: () => {
-            console.log('prsesed');
             dispatch(setToastVisible(false));
           },
         }}>
