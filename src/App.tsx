@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -8,6 +8,8 @@ import {
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/postScreen';
+import Searchbar from './shared/presentation/components/search_bar';
+import DatePicker from './shared/presentation/components/date_picker';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -16,6 +18,7 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [searchtext, setSearchText] = useState('');
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
