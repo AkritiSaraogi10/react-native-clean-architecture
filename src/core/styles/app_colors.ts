@@ -53,6 +53,7 @@ const Colors = {
   lightGreenColor: '#7C9B32',
   yellowColor: '#D8A300',
   greyColor: "#ABABAB",
+  borderColor: '#CAC4D0',
   unfocusedColor: "#777777",
   focusedColor: '#2C331C',
   lightGreenBorderColor: '#DEE6C5',
@@ -62,5 +63,6 @@ const Colors = {
   frost: '#DEE6C5',
   leafGreen: '#394D00',
   iconGreen: '#638118',
+  inactiveBorderColor: '#909090'
 };
 export default Colors;

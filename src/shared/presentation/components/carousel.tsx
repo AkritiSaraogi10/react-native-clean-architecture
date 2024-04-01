@@ -72,7 +72,6 @@ const Carousel = ({ data, renderSliderContent }: ICarousel) => {
 const styles = StyleSheet.create({
   wrap: {
     height: '35%',
-    backgroundColor: 'red',
   },
   slide: {
     flex: 1,
