@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import Colors from '../../../core/styles/app_colors';
 

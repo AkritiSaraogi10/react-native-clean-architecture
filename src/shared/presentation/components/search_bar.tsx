@@ -1,14 +1,15 @@
-import React, { SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Dimensions, Keyboard, TextInput, View } from "react-native";
 import Colors from "../../../core/styles/app_colors";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ISearchbar {
   searchText: string;
-  setSearchText: React.Dispatch<SetStateAction<string>>;
+  setSearchText: Dispatch<SetStateAction<string>>;
+  placeholder?: string;
 }
 
-const Searchbar = ({ searchText, setSearchText }: ISearchbar) => {
+const Searchbar = ({ searchText, setSearchText, placeholder = 'Search' }: ISearchbar) => {
   const [containerHeight, setContainerHeight] = useState(
     Dimensions.get("window").height
   );
@@ -45,7 +46,7 @@ const Searchbar = ({ searchText, setSearchText }: ISearchbar) => {
     >
       <Icon name="search" size={20} color={Colors.unfocusedColor} />
       <TextInput
-        placeholder="Search"
+        placeholder={placeholder}
         style={{
           flex: 1,
           height: "100%",

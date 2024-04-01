@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import CalendarPicker, { CustomDateStyle } from 'react-native-calendar-picker';
 import Colors from "../../../core/styles/app_colors";
@@ -13,16 +13,15 @@ type date = {
 interface IDatePicker {
   visibility: boolean;
   dates: date,
-  setVisibility: React.Dispatch<SetStateAction<boolean>>;
-  setDates: React.Dispatch<SetStateAction<date>>;
+  setVisibility: Dispatch<SetStateAction<boolean>>;
+  setDates: Dispatch<SetStateAction<date>>;
   isRangeSelection: boolean
 }
 
 const DatePicker = ({ visibility, dates, setVisibility, setDates, isRangeSelection = true }: IDatePicker) => {
-  const minDate = new Date();
-  const maxDate = new Date(2026, 6, 3);
   const onDateChange = (date: any, type: any) => {
     const newDate = JSON.stringify(date);
+    console.log(newDate)
     const newDate1 = newDate.substring(1, newDate.length-1);
     const dates = newDate1.split('T');
     const date1 = dates[0].split('-');
@@ -81,8 +80,6 @@ const DatePicker = ({ visibility, dates, setVisibility, setDates, isRangeSelecti
             <CalendarPicker
               headerWrapperStyle={{display: 'none'}}
               allowRangeSelection={isRangeSelection}
-              minDate={minDate}
-              maxDate={maxDate}
               weekdays={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
               dayLabelsWrapper={{borderBottomWidth: 0, borderTopWidth: 0}}
               todayBackgroundColor={Colors.lightGreenBorderColor}

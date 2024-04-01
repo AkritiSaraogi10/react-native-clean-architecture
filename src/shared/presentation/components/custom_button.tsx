@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, DimensionValue } from 'react-native';
 import Colors from '../../../core/styles/app_colors';
 
