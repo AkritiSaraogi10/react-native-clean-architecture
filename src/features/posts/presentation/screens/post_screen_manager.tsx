@@ -86,7 +86,7 @@ const usePostScreenData = () => {
 
   const handleDeletePost = (id: string) => postUseCase.deletePost(id ?? '');
 
-  const handleInputChange2 = (key: number, value: string) => {
+  const handleInputChange = (key: number, value: string) => {
     setFormFields(prev => {
       const copy = [...prev];
       copy[key].value = value;
@@ -101,7 +101,7 @@ const usePostScreenData = () => {
     handleDeletePost,
     formFields,
     setFormFields,
-    handleInputChange2,
+    handleInputChange,
     isEdit: editIndex,
     handleEditOpen,
     handleEditSave,

@@ -1,7 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {IAxiosOperations} from './axios_operations_abstract';
 import {ServerException} from '../../errors/server_exceptions';
-import store from '../../../shared/presentation/redux/store';
 import {injectable, singleton} from 'tsyringe';
 
 @singleton()

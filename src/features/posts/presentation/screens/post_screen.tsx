@@ -10,7 +10,7 @@ export default function PostScreen() {
     handleAddPost,
     handleDeletePost,
     formFields,
-    handleInputChange2,
+    handleInputChange,
     isEdit,
     handleEditOpen,
     handleEditSave,
@@ -71,7 +71,7 @@ export default function PostScreen() {
             style={{marginBottom: 10, padding: 10, borderBottomWidth: 1}}
             placeholder={field.key.charAt(0).toUpperCase() + field.key.slice(1)}
             value={field.value}
-            onChangeText={text => handleInputChange2(index, text)}
+            onChangeText={text => handleInputChange(index, text)}
           />
         ))}
         <Button title="Add Post" onPress={() => handleAddPost(formFields)} />

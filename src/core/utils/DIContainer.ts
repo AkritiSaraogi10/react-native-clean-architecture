@@ -6,7 +6,6 @@ import {PostDataSource} from '../../features/posts/data/data_sources/post_data_s
 import PostDataApiImpl from '../../features/posts/data/data_sources/post_data_api_impl';
 
 (() => {
-  console.log('from index file start');
   container.register<Database>(
     Database,
     {
@@ -23,6 +22,4 @@ import PostDataApiImpl from '../../features/posts/data/data_sources/post_data_ap
   container.register<PostRepository>('PostRepository', {
     useClass: PostRepositoryImpl,
   });
-
-  console.log('from index file end');
 })();
