@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Colors from '../../../core/styles/app_colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface dropdownInput {
     dropDownList: { label: string, value: string | number }[];
-    value: string;
+    value: string | number;
     onChange: (value: any) => void;
     label: string
 }
@@ -33,13 +33,18 @@ export const CustomDropDown = ({
         <View style={styles.container}>
             {renderLabel()}
             <Dropdown
-                placeholder={!showDropDown ? 'Location' : '...'}
                 value={value}
                 data={dropDownList}
                 labelField="label"
                 valueField="value"
                 onChange={onChange}
-                onFocus={() => setIsFocus(true)}
+                onBlur={() => {
+                    setShowDropDown(false);
+                }}
+                onFocus={() => {
+                    setIsFocus(true);
+                    setShowDropDown(true);
+                }}
                 itemTextStyle={styles.itemTextStyle}
                 containerStyle={styles.itemContainerStyle}
                 selectedTextStyle={

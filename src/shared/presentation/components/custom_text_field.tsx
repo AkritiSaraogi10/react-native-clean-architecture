@@ -37,7 +37,6 @@ const Input = ({ label, placeholder, leftIcon, rightIcon, hidePassword, onChange
                 }
             ]}>
                 {leftIcon}
-                {/* <Icon name="user" color={Colors.black} size={18} style={{ alignSelf: 'center' }} /> */}
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={Colors.inactiveBorderColor}
