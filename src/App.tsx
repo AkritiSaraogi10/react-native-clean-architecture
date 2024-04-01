@@ -8,6 +8,8 @@ import {
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/postScreen';
+import RangeDatePage from './shared/presentation/components/range_picker';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -17,13 +19,9 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <PostScreen />
-    </SafeAreaView>
+    
+      <SafeAreaProvider><RangeDatePage /></SafeAreaProvider>
+      
   );
 }
 
