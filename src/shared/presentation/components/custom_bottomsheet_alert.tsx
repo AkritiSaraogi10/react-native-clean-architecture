@@ -36,7 +36,9 @@ const CustomBottomSheetAlert = ({
                   </Text>
                 </View>
               </View>
+              <View style={{height: 10}}></View>
               <Text style={styles.descriptionText}>{description}</Text>
+              <View style={{height: 10}}></View>
               {showButton && showButton}
             </View>
           </View>
@@ -56,16 +58,18 @@ const styles = StyleSheet.create({
   alertContainer: {
     position: "absolute",
     backgroundColor: "white",
-    height: 190,
     width: "100%",
     borderWidth: 1,
     borderColor: "#fff",
     borderTopRightRadius: 27,
     borderTopLeftRadius: 27,
+    padding: 10,
     elevation: 10,
     bottom: 0,
     right: 0,
     left: 0,
+    maxHeight: 200,
+    minHeight: 100
   },
   contentContainer: {
     height: "100%",
