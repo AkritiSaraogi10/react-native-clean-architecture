@@ -2,6 +2,8 @@ import axios, {AxiosResponse} from 'axios';
 import {IAxiosOperations} from './axios_operations_abstract';
 import {ServerException} from '../../errors/server_exceptions';
 import {injectable, singleton} from 'tsyringe';
+import store from '../../../shared/presentation/redux/store';
+import {ErrorCodes} from '../../exports';
 
 @singleton()
 @injectable()
@@ -16,6 +18,15 @@ class AxiosOperations implements IAxiosOperations {
   ): Promise<AxiosResponse<T>> {
     try {
       const response = await requestFunction();
+      const internet = store.getState().internet.isConnected;
+      if (!internet) {
+        throw new ServerException(
+          'Service Unavailable',
+          503,
+          ErrorCodes.NO_INTERNET,
+        );
+      }
+      // if no internet --> empty response or internal error
       if (response.status >= 200 && response.status < 300) {
         // Successful response, you can handle it accordingly
         return response;

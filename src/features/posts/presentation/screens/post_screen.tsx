@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {View, Text, Button, TextInput, ScrollView} from 'react-native';
+import {View, Text, Button, TextInput, FlatList} from 'react-native';
 import usePostScreenData from './post_screen_manager';
-import {IPost} from '../../domain/entities/post_entity';
+import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
 
 export default function PostScreen() {
   const {
@@ -15,9 +15,9 @@ export default function PostScreen() {
     handleEditOpen,
     handleEditSave,
     handleEditChange,
-  } = usePostScreenData();
+  } = usePostScreenData(); // custom hooks
 
-  const renderItem = (item: IPost, index: number) => {
+  const renderItem = (item: PostSchema, index: number) => {
     return (
       <View key={item?._id?.toString()}>
         <View
@@ -77,9 +77,13 @@ export default function PostScreen() {
         <Button title="Add Post" onPress={() => handleAddPost(formFields)} />
       </View>
 
-      <ScrollView style={{height: 400, marginTop: 20, marginHorizontal: 20}}>
-        {posts.map((item, index) => renderItem(item, index))}
-      </ScrollView>
+      <FlatList
+        data={posts}
+        renderItem={p => {
+          return renderItem(p.item, p.index);
+        }}
+        style={{padding: 10}}
+      />
     </View>
   );
 }

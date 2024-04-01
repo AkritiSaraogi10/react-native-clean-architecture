@@ -20,7 +20,9 @@ export enum ConnectivityStatus {
   connected,
   disconnected,
 }
-
+export enum ErrorCodes {
+  NO_INTERNET = 'NO_INTERNET',
+}
 // Example usage:
 // const currentEnvironment: AppEnvironment = AppEnvironment.dev;
 // const buttonType: CustomButtonType = CustomButtonType.elevated;

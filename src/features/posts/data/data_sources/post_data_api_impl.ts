@@ -27,8 +27,8 @@ class PostDataApiImpl implements PostDataSource {
         {isList: true}, // Additional options (isList indicates response is a list of objects. which helps APIResponse model to decide and return data in that form)
       );
     } catch (e) {
-      // Handle errors
-      throw new ServerException((e as Error).toString(), null); // Throw a server exception
+      console.log(e);
+      throw e;
     }
   }
 

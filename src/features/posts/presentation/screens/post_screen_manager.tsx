@@ -1,27 +1,17 @@
 import {useEffect, useState} from 'react';
 import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
-import {
-  BSON,
-  CollectionChangeCallback,
-  OrderedCollection,
-  Results,
-} from 'realm';
-import {IPost} from '../../domain/entities/post_entity';
+import {BSON, OrderedCollection, Results} from 'realm';
 import {initialState} from '../interface/post_screen_fields';
-import PostDto from '../../data/dto/post_dto';
 import {IFields} from '../../../../core/types';
 import {useSelector} from 'react-redux';
 import {PostsUseCase} from '../../domain/usecases/get_post_usecase';
 import {container} from 'tsyringe';
 
-const postUseCase = container.resolve(PostsUseCase);
+const postUseCase = container.resolve(PostsUseCase); // DI container
 
-let listener: CollectionChangeCallback<PostSchema, [number, PostSchema]>;
-
-// Custom hook to manage state and data for the post screen
 const usePostScreenData = () => {
-  const [posts, setPosts] = useState<IPost[]>([]); // State for storing posts
-  const [editedPosts, setEditedPosts] = useState<IPost[]>([]);
+  const [posts, setPosts] = useState<PostSchema[]>([]);
+  const [editedPosts, setEditedPosts] = useState<PostSchema[]>([]);
   const internet = useSelector((state: any) => state.internet.isConnected);
 
   const [formFields, setFormFields] = useState<IFields[]>(initialState);
@@ -30,19 +20,24 @@ const usePostScreenData = () => {
   useEffect(() => {
     let posts: Results<PostSchema>;
 
-    listener = (collection: OrderedCollection<PostSchema>, changes: any) => {
-      const posts: IPost[] = collection.map((item: any) => {
-        return PostDto.fromJson(item);
-      });
+    let listener = (
+      collection: OrderedCollection<PostSchema>,
+      changes: any,
+    ) => {
       console.log('changes', changes);
-      setPosts(posts);
-      setEditedPosts(posts);
+      setPosts(Array.from(collection));
+      setEditedPosts(Array.from(collection));
     };
 
     const fetchData = async () => {
-      posts = await postUseCase.getPosts();
-      posts.removeAllListeners();
-      posts.addListener(listener);
+      try {
+        posts = await postUseCase.getPosts();
+        posts.removeAllListeners();
+        posts.addListener(listener);
+      } catch (error: any) {
+        // set failure toasts here
+        console.log(error.message, error.errorCode);
+      }
     };
 
     fetchData();
@@ -64,7 +59,8 @@ const usePostScreenData = () => {
         userId: Math.random().toString(),
       },
     );
-    postUseCase.addPost(newPost as PostSchema);
+    const newPost1 = PostSchema.fromJSON(newPost);
+    postUseCase.addPost(newPost1);
   };
 
   const handleEditOpen = (index: number) => {
@@ -82,6 +78,7 @@ const usePostScreenData = () => {
   const handleEditSave = (id: string) => {
     const postChanged = editedPosts.filter(p => p._id.toString() === id)[0];
     postUseCase.updatePost(postChanged as PostSchema);
+    setEditIndex(NaN);
   };
 
   const handleDeletePost = (id: string) => postUseCase.deletePost(id ?? '');

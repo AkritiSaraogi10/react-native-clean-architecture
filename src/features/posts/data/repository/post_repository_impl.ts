@@ -7,8 +7,8 @@ import {PostRepository} from '../../domain/repository/post_respository';
 import type {PostDataSource} from '../data_sources/post_data_source';
 import PostDto from '../dto/post_dto';
 import {inject, injectable, singleton} from 'tsyringe';
+import {ServerException} from '../../../../core/errors/server_exceptions';
 
-// Implementation of the PostRepository interface
 @singleton()
 @injectable()
 export class PostRepositoryImpl implements PostRepository {
@@ -24,26 +24,29 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async getPosts(): Promise<Results<PostSchema>> {
-    const internet = store.getState().internet.isConnected;
-
-    if (internet) {
+    try {
       const result = await this.dataSource.getPosts(); // api call
       const posts = result.results.map((item: PostDto) => {
         return PostSchema.fromJSON(item);
       });
 
       this.postService.addPosts(posts); // save to db
+
+      const postFromDB = this.postService.getPosts(); // return to screen
+
+      return postFromDB;
+    } catch (e) {
+      const postFromDB = this.postService.getPosts(); // return to screen
+      return postFromDB;
+    } finally {
+      throw new ServerException('Unable to get data from API or Local DB', 500);
     }
-
-    const postFromDB = this.postService.getPosts(); // return to screen
-
-    return postFromDB;
   }
 
   // Method to retrieve a single post
   async getPost(): Promise<IPost> {
-    const result = await this.dataSource.getPost(); // Getting a post from data source
-    return result.results; // Returning a post
+    const result = await this.dataSource.getPost();
+    return result.results;
   }
 
   // Method to add a new post (not implemented in this example)
