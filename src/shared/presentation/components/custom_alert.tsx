@@ -1,5 +1,6 @@
 import { Modal, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import Colors from "../../../core/styles/app_colors";
+import CustomButton from "./custom_button";
 
 interface ICustomAlert {
   icon: React.ReactNode,
@@ -33,24 +34,24 @@ const CustomAlert = ({
           <View style={styles.alertContainer}>
             <View style={styles.contentContainer}>
               {icon}
+              <View style={{height: 5}}></View>
               <Text style={{ fontSize: 20, fontWeight: '600', color: 'black' }}>{title}</Text>
+              <View style={{height: 3}}></View>
               <Text style={{ fontSize: 15, fontWeight: '500', color: 'black' }}>{description}</Text>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                activeOpacity={0.9}
+              <CustomButton 
+                title={prefixButtonText} 
                 onPress={handlePrefixButtonClick}
-                style={styles.prefixButton}
-              >
-                <Text style={styles.buttonText}>{prefixButtonText}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.9}
+                mode='text'
+                width={'30%'}
+              />
+              <CustomButton 
+                title={suffixButtonText} 
                 onPress={handleSuffixButtonClick}
-                style={styles.suffixButton}
-              >
-                <Text style={[styles.buttonText, { margin: 10 }]}>{suffixButtonText}</Text>
-              </TouchableOpacity>
+                mode='outlined'
+                width={'30%'}
+              />
             </View>
           </View>
         </View>
@@ -70,25 +71,23 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     backgroundColor: 'white',
-    height: 190,
-    width: '90%',
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 7,
     elevation: 10,
-    paddingRight: 18,
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   contentContainer: {
-    height: 120,
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    paddingVertical: 10
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 5,
+    alignSelf: 'flex-end',
   },
   prefixButton: {
     width: '20%',

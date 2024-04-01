@@ -25,7 +25,7 @@ const CustomAccordian = ({
           <Checkbox
             status={checked ? 'checked' : 'unchecked'}
             color={Colors.greenColor}
-            uncheckedColor={Colors.suvaGray}
+            uncheckedColor={Colors.inactiveBorderColor}
             onPress={() => handleClick('checkbox')}
           />
         </View>
