@@ -8,12 +8,14 @@ interface dropdownInput {
     dropDownList: { label: string, value: string | number }[];
     value: string;
     onChange: (value: any) => void;
+    label: string
 }
 
 export const CustomDropDown = ({
     dropDownList,
     value,
     onChange,
+    label
 }: dropdownInput) => {
     const [showDropDown, setShowDropDown] = useState(false);
     const [isFocus, setIsFocus] = useState(false);
@@ -21,7 +23,7 @@ export const CustomDropDown = ({
         if (value || isFocus) {
             return (
                 <Text style={[styles.label, { color: isFocus ? Colors.greenColor : Colors.black }]}>
-                    Label
+                    {label}
                 </Text>
             );
         }
