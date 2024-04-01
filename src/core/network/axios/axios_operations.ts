@@ -1,6 +1,10 @@
 import axios, {AxiosResponse} from 'axios';
 import {IAxiosOperations} from './axios_operations_abstract';
+import {ServerException} from '../../errors/server_exceptions';
+import {injectable, singleton} from 'tsyringe';
 
+@singleton()
+@injectable()
 class AxiosOperations implements IAxiosOperations {
   private axiosInstance: typeof axios;
   constructor() {
@@ -12,7 +16,6 @@ class AxiosOperations implements IAxiosOperations {
   ): Promise<AxiosResponse<T>> {
     try {
       const response = await requestFunction();
-
       if (response.status >= 200 && response.status < 300) {
         // Successful response, you can handle it accordingly
         return response;
