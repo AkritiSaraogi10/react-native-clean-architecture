@@ -16,11 +16,6 @@ class AxiosOperations implements IAxiosOperations {
     requestFunction: () => Promise<AxiosResponse<T>>,
   ): Promise<AxiosResponse<T>> {
     try {
-      if (store.getState().internet.isConnected) {
-        // api response
-      } else {
-        // realm response
-      }
       const response = await requestFunction();
       if (response.status >= 200 && response.status < 300) {
         // Successful response, you can handle it accordingly
