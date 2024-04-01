@@ -8,7 +8,7 @@ import {
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/postScreen';
-import {Provider} from 'react-native-paper';
+import { Provider } from 'react-native-paper';
 import { BluetoothScreen } from './features/posts/presentation/screens/bluetoothScreen';
 
 function App(): React.JSX.Element {
@@ -19,16 +19,13 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <Provider>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        {/* <PostScreen /> */}
-        <BluetoothScreen />
-      </SafeAreaView>
-    </Provider>
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={backgroundStyle.backgroundColor}
+      />
+      <BluetoothScreen />
+    </SafeAreaView>
   );
 }
 
