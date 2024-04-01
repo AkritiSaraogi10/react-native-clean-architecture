@@ -21,7 +21,6 @@ interface IDatePicker {
 const DatePicker = ({ visibility, dates, setVisibility, setDates, isRangeSelection = true }: IDatePicker) => {
   const onDateChange = (date: any, type: any) => {
     const newDate = JSON.stringify(date);
-    console.log(newDate)
     const newDate1 = newDate.substring(1, newDate.length-1);
     const dates = newDate1.split('T');
     const date1 = dates[0].split('-');

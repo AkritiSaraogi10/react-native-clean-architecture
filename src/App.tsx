@@ -26,15 +26,6 @@ function App(): React.JSX.Element {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <PostScreen />
-      <Searchbar searchText={searchtext} setSearchText={setSearchText} />
-      <DatePicker visibility={true} dates={{
-        startDate: '',
-        endDate: ''
-      }} setVisibility={function (value: React.SetStateAction<boolean>): void {
-        throw new Error('Function not implemented.');
-      } } setDates={function (value: React.SetStateAction<{ startDate: string; endDate: string; }>): void {
-        throw new Error('Function not implemented.');
-      } } isRangeSelection={true} />
     </SafeAreaView>
   );
 }
