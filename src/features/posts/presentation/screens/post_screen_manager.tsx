@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
+import PostSchema from '../../../../core/local_DB/collections/post/post_schema';
 import {BSON, OrderedCollection, Results} from 'realm';
 import {initialState} from '../interface/post_screen_fields';
 import {IFields} from '../../../../core/types';
@@ -21,10 +21,8 @@ const usePostScreenData = () => {
     let posts: Results<PostSchema>;
 
     let listener = (
-      collection: OrderedCollection<PostSchema>,
-      changes: any,
+      collection: OrderedCollection<PostSchema>
     ) => {
-      console.log('changes', changes);
       setPosts(Array.from(collection));
       setEditedPosts(Array.from(collection));
     };
@@ -60,7 +58,11 @@ const usePostScreenData = () => {
       },
     );
     const newPost1 = PostSchema.fromJSON(newPost);
-    postUseCase.addPost(newPost1);
+    try {
+      postUseCase.addPost(newPost1);
+    } catch (error: any) {
+      console.log(error.message, error.errorCode);
+    }
   };
 
   const handleEditOpen = (index: number) => {
@@ -77,11 +79,21 @@ const usePostScreenData = () => {
 
   const handleEditSave = (id: string) => {
     const postChanged = editedPosts.filter(p => p._id.toString() === id)[0];
-    postUseCase.updatePost(postChanged as PostSchema);
-    setEditIndex(NaN);
+    try {
+      postUseCase.updatePost(postChanged as PostSchema);
+      setEditIndex(NaN);
+    } catch (error: any) {
+      console.log(error.message, error.errorCode);
+    }
   };
 
-  const handleDeletePost = (id: string) => postUseCase.deletePost(id ?? '');
+  const handleDeletePost = (id: string) => {
+    try {
+      postUseCase.deletePost(id ?? '')
+    } catch (error: any) {
+      console.log(error.message, error.errorCode);
+    }
+  };
 
   const handleInputChange = (key: number, value: string) => {
     setFormFields(prev => {

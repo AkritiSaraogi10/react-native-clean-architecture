@@ -1,12 +1,11 @@
 import {Results} from 'realm';
-import {IPost} from '../entities/post_entity';
 import type {PostRepository} from '../repository/post_respository';
-import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
+import PostSchema from '../../../../core/local_DB/collections/post/post_schema';
 import {injectable, singleton, inject} from 'tsyringe';
 
 export interface IGetPosts {
   getPosts(): Promise<Results<PostSchema>>;
-  getPost(): Promise<IPost>;
+  getPost(): Promise<Results<PostSchema>>;
 }
 
 @singleton()
@@ -22,7 +21,7 @@ export class PostsUseCase implements IGetPosts {
     return this.postRepo.getPosts();
   }
 
-  async getPost(): Promise<IPost> {
+  async getPost(): Promise<Results<PostSchema>> {
     return this.postRepo.getPost();
   }
 

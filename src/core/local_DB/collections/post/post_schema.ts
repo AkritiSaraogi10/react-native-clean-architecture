@@ -1,8 +1,8 @@
 import {BSON, ObjectSchema} from 'realm';
-import {SCHEMA_NAMES} from '../../schema_names';
 import {Realm} from 'realm';
 import {container, delay} from 'tsyringe';
-import Database from '../../network/Database'; // this causes cyclic import will be fixed later
+import Database from '../../core/Database'; // this causes cyclic import will be fixed later
+import { SCHEMA_NAMES } from '../../../utils/constants/constants';
 
 // Class definition for PostSchema representing a Realm object. (same as of API response)
 class PostSchema extends Realm.Object {
@@ -14,7 +14,7 @@ class PostSchema extends Realm.Object {
 
   // Static schema definition for the PostSchema
   static schema: ObjectSchema = {
-    name: SCHEMA_NAMES.POST, // Name of the schema obtained from SCHEMA_NAMES constant
+    name: SCHEMA_NAMES.POST,
     primaryKey: '_id', // Primary key of the schema
     properties: {
       _id: 'objectId',

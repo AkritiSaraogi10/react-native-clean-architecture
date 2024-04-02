@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {StatusBar, useColorScheme} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, StatusBar, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import PostScreen from './features/posts/presentation/screens/post_screen';
 import NetInfo from '@react-native-community/netinfo';
@@ -43,6 +43,7 @@ function App(): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isDarkMode = useColorScheme() === 'dark';
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -50,22 +51,28 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaProvider style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <Snackbar
-        visible={showToastCheck}
-        onDismiss={() => dispatch(setToastVisible(false))}
-        action={{
-          label: 'ok',
-          onPress: () => {
-            dispatch(setToastVisible(false));
-          },
-        }}>
+      {isLoggedIn ? 
+      <>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <Snackbar
+          visible={showToastCheck}
+          onDismiss={() => dispatch(setToastVisible(false))}
+          action={{
+            label: 'ok',
+            onPress: () => {
+              dispatch(setToastVisible(false));
+            },
+          }}
+        >
         {isConnectedCheck ? ' Online' : 'Offline'}
-      </Snackbar>
-      <PostScreen />
+        </Snackbar>
+        <PostScreen />
+      </> : 
+        <ActivityIndicator size={'large'} />
+      }
     </SafeAreaProvider>
   );
 }
