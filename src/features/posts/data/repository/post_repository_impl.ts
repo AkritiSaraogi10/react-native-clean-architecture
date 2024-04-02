@@ -64,13 +64,12 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async addPost(postData: PostSchema): Promise<void> {
-    const internet = store.getState().internet.isConnected;
 
     try {
       // TODO: add api logic
-      if (internet) {
+      //if (internet) {
         //this.dataSource.addPost();
-      }
+      //}
       this.postService.addPost(postData);
     } catch (e) {
       throw new ServerException('Unable to add data to API or Local DB', 500);
@@ -78,13 +77,12 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async deletePost(postId: string): Promise<void> {
-    const internet = store.getState().internet.isConnected;
 
     try {
       // TODO: delete api logic
-      if (internet) {
+      //if (internet) {
         //this.dataSource.deletePost();
-      }
+      //}
       this.postService.deletePost(postId);
     } catch (e) {
       throw new ServerException('Unable to add data to API or Local DB', 500);
@@ -92,13 +90,12 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async updatePost(postData: Partial<PostSchema>): Promise<void> {
-    const internet = store.getState().internet.isConnected;
 
     try {
       // TODO: update api logic
-      if (internet) {
+      //if (internet) {
         //this.dataSource.updatePost();
-      }
+      //}
       this.postService.updatePost(postData);
     } catch (e) {
       throw new ServerException('Unable to add data to API or Local DB', 500);
