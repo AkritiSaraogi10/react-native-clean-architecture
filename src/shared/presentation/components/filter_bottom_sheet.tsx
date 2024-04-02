@@ -1,19 +1,19 @@
 import {
   ColorValue,
   DimensionValue,
-  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {Checkbox, Icon, RadioButton} from 'react-native-paper';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import CustomScrollView from './custom_scroll_view';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import React from 'react';
 import Colors from '../../../core/styles/app_colors';
 import {CustomBottomSheet} from './custom_bottom_sheet';
+import CustomButton from './custom_button';
+import useDimensions from '../hooks/useDimensions.hook';
 
 interface IFilterBottomSheetProps {
   type?: 'checkbox' | 'radio' | 'Icon';
@@ -35,11 +35,11 @@ interface IFilterBottomSheetProps {
       | 'tailListItem',
     index?: number,
   ) => void;
-  bottomSheetRef?: React.RefObject<RBSheet>;
   sheetAttributes: {
     heightPercent: number;
     backGroundColor?: string;
   };
+  isVisible: boolean;
 }
 
 export const FilterBottomSheet = ({
@@ -49,25 +49,18 @@ export const FilterBottomSheet = ({
   headerText,
   filterOptions,
   type,
-  bottomSheetRef,
   sheetAttributes,
+  isVisible,
 }: IFilterBottomSheetProps) => {
+  const {screenHeight} = useDimensions()
 
-  const screenHeight = Dimensions.get('window').height;
 
   return (
     <CustomBottomSheet
-      bottomSheetRef={bottomSheetRef}
       animationType="slide"
       heightPercent={sheetAttributes.heightPercent}
-      customStyles={{
-        container: {borderTopLeftRadius: 16, borderTopRightRadius: 16},
-        wrapper: {
-          ...(sheetAttributes.backGroundColor && {
-            backgroundColor: sheetAttributes.backGroundColor,
-          }),
-        },
-      }}>
+      isVisble={isVisible}
+      handleClose={() => handleClick('cancel')} backgroundColor={sheetAttributes.backGroundColor}>
       <View style={styles.bottomSheetTopStyle}>
         <View style={styles.bottomSheetTopContainerStyle}>
           <TouchableOpacity
@@ -79,7 +72,7 @@ export const FilterBottomSheet = ({
           <Text style={styles.bottomSheetItemTextStyle}>{headerText}</Text>
         </View>
         <CustomScrollView
-          height={(screenHeight * sheetAttributes.heightPercent) / 100 - 128}>
+          height={(screenHeight * sheetAttributes.heightPercent) / 100 - 132}>
           <View>
             {filterOptions?.map((option, index) => (
               <View key={index} style={styles.bottomSheetItemStyle}>
@@ -162,25 +155,27 @@ export const FilterBottomSheet = ({
           </View>
         </CustomScrollView>
         <View style={styles.bottomSheetBottomContainerStyle}>
-          <Text
-            style={styles.bottomSheetBottomTextStyle}
-            onPress={() => handleClick('bottomLeftButton')}>
-            {bottomLeftText}
-          </Text>
-          <TouchableOpacity
-            style={styles.showAllButtonContainer}
+          <CustomButton
+            textStyle={styles.bottomSheetBottomTextStyle}
+            onPress={() => handleClick('bottomLeftButton')}
+            title={bottomLeftText}
+            mode="text"
+            width={100}
+          />
+          <CustomButton
+            title={`${bottomRight.text} ${
+              bottomRight.count ? `(${bottomRight.count})` : ''
+            }`}
+            icon={
+              <Icon source={bottomRight.icon} size={22} color={Colors.white} />
+            }
+            height={48}
+            width={249}
             onPress={() => {
               handleClick('bottomRightButton');
-            }}>
-            <View style={styles.showAllButtonContent}>
-              <Icon source={bottomRight.icon} size={22} color={Colors.white} />
-              <Text style={styles.showAllButtonText}>
-                {`${bottomRight.text} ${
-                  bottomRight.count ? `(${bottomRight.count})` : ''
-                }`}
-              </Text>
-            </View>
-          </TouchableOpacity>
+            }}
+            mode="contained"
+          />
         </View>
       </View>
     </CustomBottomSheet>
@@ -208,8 +203,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: 'center',
     borderColor: Colors.backgroundColor,
-    borderBottomWidth: 1,
-    paddingVertical: 12,
+    borderBottomWidth: 1.5,
+    paddingVertical: 13,
   },
   bottomSheetItemLeftStyle: {
     flexDirection: 'row',
@@ -256,9 +251,8 @@ const styles = StyleSheet.create({
   bottomSheetBottomContainerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
     paddingTop: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     borderColor: Colors.backgroundColor,
     justifyContent: 'space-between',
   },
@@ -269,27 +263,5 @@ const styles = StyleSheet.create({
     color: Colors.greenColor,
     fontFamily: 'Uni Neue',
     paddingHorizontal: 12,
-    paddingTop: 10,
-    height: 48,
-  },
-  showAllButtonContainer: {
-    flex: 1,
-    backgroundColor: Colors.greenColor,
-    borderColor: Colors.greenColor,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    borderWidth: 0.4,
-  },
-  showAllButtonContent: {
-    flexDirection: 'row',
-    gap: 8,
-    height: 48,
-    alignItems: 'center',
-  },
-  showAllButtonText: {
-    textAlign: 'center',
-    color: Colors.white,
-    fontSize: 18,
   },
 });
