@@ -1,26 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
-import { BleManager, Characteristic, Device } from 'react-native-ble-plx';
+import {
+  BleManager,
+  Characteristic,
+  Device,
+} from 'react-native-ble-plx';
 import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 import DeviceInfo from 'react-native-device-info';
 
-type VoidCallback = (result: boolean) => void;
+const SERVICE_UUID = '89d3502b-0f36-433a-8ef4-c502ad55f8dc';
+const CHAR_UUID = 'af0badb1-5b99-43cd-917a-a77bc549e3cc';
 
 const bleManager = new BleManager();
 
+type VoidCallback = (result: boolean) => void;
+
 interface BluetoothLowEnergyApi {
-  requestPermissions(callback: VoidCallback): Promise<void>;
-  scanForDevices(): void;
-  connectToDevice(device: Device): Promise<void>;
+  requestPermissions(cb: VoidCallback): Promise<void>;
+  scanForPeripherals(): void;
+  connectToDevice: (deviceId: Device) => Promise<void>;
+  disconnectFromDevice: () => void;
+  connectedDevice: Device | null;
   allDevices: Device[];
+  streamedData: string[]
 }
-export default function useBLE(): BluetoothLowEnergyApi {
 
-
-
+function useBLE(): BluetoothLowEnergyApi {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
+  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [streamedData, setStreamedData] = useState<string[]>([]);
 
-  //request permission for android
   const requestPermissions = async (cb: VoidCallback) => {
     if (Platform.OS === 'android') {
       const apiLevel = await DeviceInfo.getApiLevel();
@@ -59,110 +68,92 @@ export default function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
+  const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1;
 
-  //scxan device
-  const scanForDevices = async () => {
+  const scanForPeripherals = () =>
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.log("Error in scanning devices:", error);
-        return;
+        console.log(error);
       }
       if (device) {
-        console.log("Device Found:", device.id, device.name, device.localName);
-        setAllDevices(prevState => {
-          if (!isDuplicateDevice(prevState, device)) {
+        setAllDevices((prevState: Device[]) => {
+          if (!isDuplicteDevice(prevState, device)) {
             return [...prevState, device];
           }
           return prevState;
         });
-        connectToDevice(device);
-        bleManager.stopDeviceScan();
       }
     });
-  };
 
-  //connect device
   const connectToDevice = async (device: Device) => {
-    console.log("Connecting to:", device.id, device.name);
     try {
-      await bleManager.connectToDevice(device.id);
-      console.log(`Device ${device.id} connected successfully!`);
+      const deviceConnection = await bleManager.connectToDevice(device.id);
+      console.log("deviceConnection", deviceConnection)
+      setConnectedDevice(deviceConnection);
+      await deviceConnection.discoverAllServicesAndCharacteristics();
+      const deviceData = await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
+      console.log("deviceData-->  ", deviceData);
 
-      //discovering all service and characteristics
-      await device.discoverAllServicesAndCharacteristics();
-      console.log("Services and characteristics discovered");
-      await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
-
-      //checking device services
-      const deviceServices = await bleManager.servicesForDevice(device.id);
-      console.log("device Services", deviceServices);
-
-      for (const service of deviceServices) {
-        const characteristics = await bleManager.characteristicsForDevice(device.id, service.uuid);
-        console.log("Characteristics for service", service.uuid, characteristics);
-
-        // Read characteristics
-        for (const characteristic of characteristics) {
-          await bleManager.readCharacteristicForDevice(device.id, service.uuid, characteristic.uuid);
-          console.log("Characteristic Value for", characteristic.uuid, characteristic);
-        }
-      }
-
-      // read char for services
-      await readServices(device);
-    } catch (error) {
-      console.log('ERROR-->', error);
-    }
-  };
-
-  const readServices = async (device: Device) => {
-    try {
       const services = await device.services();
-      const characteristics = await services[1].characteristics();
-      console.log("Characteristics:", characteristics);
-      console.log("Services:", services);
       for (const service of services) {
         const characteristics = await device.characteristicsForService(service.uuid);
         characteristics.forEach(characteristic => {
-          enableCharacteristicIndication(characteristic);
-          console.log("Characteristic UUID:", characteristic.uuid);
+          startStreamingData(characteristic);
+          console.log("Characteristic", characteristic);
+          console.log("Characteristic UUID:", characteristic.descriptors, characteristic.uuid, characteristic.deviceID);
           console.log("Characteristic Value:", characteristic.id);
         });
       }
-    } catch (error) {
-      console.error("Error reading services:", error);
+
+      bleManager.stopDeviceScan();
+      // startStreamingData(deviceConnection);
+    } catch (e) {
+      console.log('FAILED TO CONNECT', e);
     }
   };
-
-  const enableCharacteristicIndication = async (characteristic: Characteristic) => {
-    if (!characteristic) {
-      console.warn('No characteristic selected');
-      return;
+  const disconnectFromDevice = () => {
+    if (connectedDevice) {
+      bleManager.cancelDeviceConnection(connectedDevice.id);
+      setConnectedDevice(null);
     }
-    try {
-      bleManager.monitorCharacteristicForDevice(characteristic.deviceID, characteristic.serviceUUID,
-        characteristic.uuid, (error, characteristic) => {
+  };
+  const startStreamingData = async (device: Characteristic) => {
+    if (device) {
+      bleManager.monitorCharacteristicForDevice(
+        device.deviceID,
+        device.serviceUUID,
+        device.uuid,
+        (error, characteristic) => {
           if (error) {
-            console.error("Error at receiving data from device", error);
-            return;
-          } else {
-            console.log("characteristic -->", characteristic?.value);
-            console.log('Characteristic indication enabled');
+            console.log("startStreamingData---> ", error)
+          }
+          if (characteristic) {
+            if (characteristic && characteristic.value !== null) {
+              setStreamedData(prevData => [
+                ...prevData,
+                characteristic.value as string
+              ]);
+              console.log('Monitor:', characteristic.value);
+            }
+
           }
         }
       );
-
-    } catch (error) {
-      console.error('Enable indication error:', error);
+    } else {
+      console.log('No Device Connected');
     }
   };
 
   return {
+    scanForPeripherals,
     requestPermissions,
-    scanForDevices,
     connectToDevice,
     allDevices,
+    connectedDevice,
+    disconnectFromDevice,
+    streamedData
   };
 }
+
+export default useBLE;

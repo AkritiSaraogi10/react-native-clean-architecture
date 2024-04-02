@@ -1,53 +1,121 @@
-import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CustomBottomSheet } from '../../../../shared/presentation/components/custom_bottom_sheet';
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import useBLE from '../../../../shared/presentation/hooks/useBLE';
-import Colors from '../../../../core/styles/app_colors';
+import DeviceModal from './device_modal';
 
-export const BluetoothScreen = () => {
-  const [visible, setVisible] = useState(false);
-  const { requestPermissions, scanForDevices, allDevices } = useBLE();
+const App = () => {
+  const {
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    disconnectFromDevice,
+  } = useBLE();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [streamedData, setStreamedData] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log("streamedData", streamedData);
+    setStreamedData(streamedData);
+  }, [streamedData]);
 
 
-  const scanForPeripherals = () => {
+  const scanForDevices = () => {
     requestPermissions(isGranted => {
-      console.log('isGranted--> ', isGranted);
       if (isGranted) {
-        scanForDevices();
+        scanForPeripherals();
       }
     });
   };
 
-
-  const closeSheet = () => {
-    setVisible(false);
+  const hideModal = () => {
+    setIsModalVisible(false);
   };
 
-  const openSheet = () => {
-    scanForPeripherals();
-    setVisible(true);
-    console.log(allDevices);
+  const openModal = async () => {
+    scanForDevices();
+    setIsModalVisible(true);
   };
 
-
+  console.log("isModalVisible==>", isModalVisible)
   return (
-    <SafeAreaView>
-      <Text>Bluetooth Devices</Text>
-      <TouchableOpacity onPress={() => openSheet()} style={{ height: 20, margin: 20 }}>
-        <Text>Open Sheet</Text></TouchableOpacity>
-      <CustomBottomSheet
-        handleClose={closeSheet}
-        heightPercent={50}
-        isVisble={visible}
-        animationType="slide">
-        <View>
-          {
-            allDevices.map((device, index) => <View key={index} style={{ backgroundColor: 'blue' }}>
-              <Text style={{ color: Colors.white }}>{device.id} {device.name} {device.localName}</Text></View>)
-          }
-        </View>
-      </CustomBottomSheet>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <TouchableOpacity
+          onPress={connectedDevice ? disconnectFromDevice : openModal}
+          style={styles.ctaButton}>
+          <Text style={styles.ctaButtonText}>
+            {connectedDevice ? 'Disconnect' : 'Connect'}
+          </Text>
+        </TouchableOpacity>
+        {connectedDevice ? (
+          <View style={{ backgroundColor: 'yellow', height: 50, padding: 10 }}>
+            <Text style={{ color: 'red' }}>Streamed Data:</Text>
+            <FlatList
+              data={streamedData}
+              renderItem={({ item }) => <Text>{item}</Text>}
+            />
+          </View>
+        ) : (
+          <Text style={styles.titleText}>
+            Please Connect
+          </Text>
+        )}
+      </View>
+
+      <DeviceModal
+        closeModal={hideModal}
+        visible={isModalVisible}
+        connectToPeripheral={connectToDevice}
+        devices={allDevices}
+      />
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  titleWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  titleText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginHorizontal: 20,
+    color: 'black',
+  },
+  text: {
+    fontSize: 25,
+    marginTop: 15,
+  },
+  ctaButton: {
+    backgroundColor: 'purple',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    marginHorizontal: 20,
+    marginBottom: 5,
+    borderRadius: 8,
+  },
+  ctaButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+});
+
+export default App;
