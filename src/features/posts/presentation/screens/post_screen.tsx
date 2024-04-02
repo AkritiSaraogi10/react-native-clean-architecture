@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {View, Text, Button, TextInput, FlatList} from 'react-native';
 import usePostScreenData from './post_screen_manager';
-import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
+import PostSchema from '../../../../core/local_DB/collections/post/post_schema';
 
 export default function PostScreen() {
   const {

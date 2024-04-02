@@ -1,12 +1,11 @@
-import {BSON} from 'realm'; // Importing BSON from Realm
-import {IPost} from '../../domain/entities/post_entity'; // Importing IPost interface from domain layer
+import {BSON} from 'realm';
 
 // Class representing a post DTO (Data Transfer Object)
-class PostDto implements IPost {
-  userId: string; // User ID
-  _id: BSON.ObjectId; // Post ID
-  title: string; // Post title
-  body: string; // Post body
+class PostDto {
+  userId: string;
+  _id: BSON.ObjectId;
+  title: string;
+  body: string;
 
   // Constructor to initialize post properties
   constructor(userId: string, id: number, title: string, body: string) {

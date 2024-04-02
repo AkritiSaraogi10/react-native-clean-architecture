@@ -17,12 +17,12 @@ class PostDataApiImpl implements PostDataSource {
   async getPosts(): Promise<ApiResponse<PostDto[]>> {
     try {
       const results: AxiosResponse<any> = await this.axiosOperations.get(
-        'https://jsonplaceholder.typicode.com/posts', // Providing API endpoint for getting posts
+        'https://jsonplaceholder.typicode.com/posts',
       );
 
       // Convert response data to ApiResponse<PostDto[]>
       return ApiResponse.fromJson<PostDto[], PostDto>(
-        results.data, // Response data
+        results.data,
         PostDto.fromJson, // Function to convert JSON to PostDto
         {isList: true}, // Additional options (isList indicates response is a list of objects. which helps APIResponse model to decide and return data in that form)
       );
@@ -35,13 +35,12 @@ class PostDataApiImpl implements PostDataSource {
   async getPost(): Promise<ApiResponse<PostDto>> {
     try {
       const results: AxiosResponse<any> = await this.axiosOperations.get(
-        'https://jsonplaceholder.typicode.com/posts', // API endpoint for getting posts
+        'https://jsonplaceholder.typicode.com/posts',
       );
 
-      // Convert response data to ApiResponse<PostDto>
       return ApiResponse.fromJson<PostDto, PostDto>(
-        results.data, // Response data
-        PostDto.fromJson, // Function to convert JSON to PostDto
+        results.data,
+        PostDto.fromJson,
       );
     } catch (e) {
       // Handle errors

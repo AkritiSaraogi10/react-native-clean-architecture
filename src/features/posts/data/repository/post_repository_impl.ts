@@ -1,8 +1,7 @@
 import {Results} from 'realm';
-import PostSchema from '../../../../shared/local_data/collections/post/post_schema';
-import PostService from '../../../../shared/local_data/collections/post/post_service';
+import PostSchema from '../../../../core/local_DB/collections/post/post_schema';
+import PostService from '../../../../core/local_DB/collections/post/post_service';
 import store from '../../../../shared/presentation/redux/store';
-import {IPost} from '../../domain/entities/post_entity';
 import {PostRepository} from '../../domain/repository/post_respository';
 import type {PostDataSource} from '../data_sources/post_data_source';
 import PostDto from '../dto/post_dto';
@@ -13,7 +12,7 @@ import {ServerException} from '../../../../core/errors/server_exceptions';
 @injectable()
 export class PostRepositoryImpl implements PostRepository {
   private dataSource: PostDataSource; // Data source(Returns API response) for retrieving post data
-  private postService: PostService; //realm service
+  private postService: PostService;
 
   constructor(
     @inject('PostDataSource') datasource: PostDataSource,
@@ -24,63 +23,82 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async getPosts(): Promise<Results<PostSchema>> {
-    try {
-      const result = await this.dataSource.getPosts(); // api call
-      const posts = result.results.map((item: PostDto) => {
-        return PostSchema.fromJSON(item);
-      });
+    try{
+      try {
+        const result = await this.dataSource.getPosts(); // api call
+        const posts = result.results.map((item: PostDto) => {
+          return PostSchema.fromJSON(item);
+        });
 
-      this.postService.addPosts(posts); // save to db
+        this.postService.addPosts(posts); // save to db
 
-      const postFromDB = this.postService.getPosts(); // return to screen
-
-      return postFromDB;
-    } catch (e) {
-      const postFromDB = this.postService.getPosts(); // return to screen
-      return postFromDB;
-    } finally {
+        const postFromDB = this.postService.getPosts(); // return to screen
+        return postFromDB;
+      } catch (e) {
+        const postFromDB = this.postService.getPosts(); // return to screen
+        return postFromDB;
+      } 
+     } catch (e) {
       throw new ServerException('Unable to get data from API or Local DB', 500);
     }
   }
 
-  // Method to retrieve a single post
-  async getPost(): Promise<IPost> {
-    const result = await this.dataSource.getPost();
-    return result.results;
+  async getPost(): Promise<Results<PostSchema>> {
+    try {
+      try {
+        const result = await this.dataSource.getPost();
+        const post = PostSchema.fromJSON(result.results);
+
+        this.postService.addPost(post); // save to db
+
+        const postFromDB = this.postService.getPost(); // return to screen
+
+        return postFromDB;
+      } catch (e) {
+        const postFromDB = this.postService.getPost(); // return to screen
+        return postFromDB;
+      } 
+    } catch {
+      throw new ServerException('Unable to get data from API or Local DB', 500);
+    }
   }
 
-  // Method to add a new post (not implemented in this example)
   async addPost(postData: PostSchema): Promise<void> {
-    const internet = store.getState().internet.isConnected;
 
-    // TODO: add api logic
-    if (internet) {
-      //  post to with api
-      // this.dataSource.
-    } else {
+    try {
+      // TODO: add api logic
+      //if (internet) {
+        //this.dataSource.addPost();
+      //}
       this.postService.addPost(postData);
-    }
+    } catch (e) {
+      throw new ServerException('Unable to add data to API or Local DB', 500);
+    } 
   }
 
-  // Method to delete a post (not implemented in this example)
   async deletePost(postId: string): Promise<void> {
-    const internet = store.getState().internet.isConnected;
-    // TODO: add api logic
-    if (internet) {
-    } else {
+
+    try {
+      // TODO: delete api logic
+      //if (internet) {
+        //this.dataSource.deletePost();
+      //}
       this.postService.deletePost(postId);
-    }
+    } catch (e) {
+      throw new ServerException('Unable to add data to API or Local DB', 500);
+    } 
   }
 
-  // Method to update a post in the Realm database
   async updatePost(postData: Partial<PostSchema>): Promise<void> {
-    const internet = store.getState().internet.isConnected;
-    // TODO: add api logic
-    if (internet) {
-      // replace this.
-      return this.postService.updatePost(postData);
-    } else {
-      return this.postService.updatePost(postData);
-    }
+
+    try {
+      // TODO: update api logic
+      //if (internet) {
+        //this.dataSource.updatePost();
+      //}
+      this.postService.updatePost(postData);
+    } catch (e) {
+      throw new ServerException('Unable to add data to API or Local DB', 500);
+    } 
   }
 }

@@ -1,9 +1,6 @@
 import {Lifecycle, container} from 'tsyringe';
-import Database from '../../shared/local_data/network/Database';
-import {PostRepository} from '../../features/posts/domain/repository/post_respository';
-import {PostRepositoryImpl} from '../../features/posts/data/repository/post_repository_impl';
-import {PostDataSource} from '../../features/posts/data/data_sources/post_data_source';
-import PostDataApiImpl from '../../features/posts/data/data_sources/post_data_api_impl';
+import Database from '../local_DB/core/Database';
+import postDiContainer from '../../features/posts/post_DI_container';
 
 (() => {
   container.register<Database>(
@@ -15,11 +12,5 @@ import PostDataApiImpl from '../../features/posts/data/data_sources/post_data_ap
       lifecycle: Lifecycle.Singleton,
     },
   );
-
-  container.register<PostDataSource>('PostDataSource', {
-    useClass: PostDataApiImpl,
-  });
-  container.register<PostRepository>('PostRepository', {
-    useClass: PostRepositoryImpl,
-  });
+  postDiContainer();
 })();
