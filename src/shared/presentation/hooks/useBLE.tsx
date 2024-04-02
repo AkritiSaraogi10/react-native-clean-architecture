@@ -17,8 +17,9 @@ interface BluetoothLowEnergyApi {
 export default function useBLE(): BluetoothLowEnergyApi {
 
 
-
   const [allDevices, setAllDevices] = useState<Device[]>([]);
+  const [serviceID, setServiceID] = useState("0c2ad08c-5065-49ed-a6e3-5a8a05cee69b");
+
 
   //request permission for android
   const requestPermissions = async (cb: VoidCallback) => {
@@ -69,7 +70,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
         console.log("Error in scanning devices:", error);
         return;
       }
-      if (device) {
+      if (device && device.name?.startsWith("Point-1-2D:9F")) {
         console.log("Device Found:", device.id, device.name, device.localName);
         setAllDevices(prevState => {
           if (!isDuplicateDevice(prevState, device)) {
@@ -124,12 +125,13 @@ export default function useBLE(): BluetoothLowEnergyApi {
       console.log("Characteristics:", characteristics);
       console.log("Services:", services);
       for (const service of services) {
-        const characteristics = await device.characteristicsForService(service.uuid);
+        const characteristics = await device.characteristicsForService("0c2ad08c-5065-49ed-a6e3-5a8a05cee69b");
         characteristics.forEach(characteristic => {
           enableCharacteristicIndication(characteristic);
           console.log("Characteristic UUID:", characteristic.uuid);
           console.log("Characteristic Value:", characteristic.id);
         });
+        break;
       }
     } catch (error) {
       console.error("Error reading services:", error);
