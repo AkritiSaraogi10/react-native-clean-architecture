@@ -126,7 +126,7 @@ export default function useBLE(): BluetoothLowEnergyApi {
         );
         for (const characteristic of characteristics) {
           console.log('Characteristic Value for', characteristic.uuid);
-          // enableCharacteristicIndication(characteristic);
+          enableCharacteristicIndication(characteristic);
 
         }
       }
