@@ -59,22 +59,9 @@ export const BluetoothScreen = () => {
 
   const handleConnect = (device: Device) => {
     if (connectedDevice && connectedDevice.id !== device.id) {
-
-      Alert.alert(
-        'Error',
-        'Please disconnect from the currently connected device before connecting to a new one.',
-        [
-          {
-            text: 'OK',
-            onPress: () => console.log('OK Pressed'),
-            style: 'cancel',
-          },
-        ]
-      );
-      return;
-    }
-
-    if (connectedDevice && connectedDevice.id === device.id) {
+      disconnectFromDevice(connectedDevice);
+      connectToDevice(device);
+    } else if (connectedDevice && connectedDevice.id === device.id) {
       disconnectFromDevice(device);
     } else {
       connectToDevice(device);
