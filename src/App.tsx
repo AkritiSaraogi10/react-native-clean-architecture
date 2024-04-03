@@ -7,9 +7,7 @@ import {
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import PostScreen from './features/posts/presentation/screens/postScreen';
-import { Provider } from 'react-native-paper';
-import { BluetoothScreen } from './features/posts/presentation/screens/bluetoothScreen';
+import BluetoothScreen from './features/posts/presentation/screens/bluetoothScreen';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';

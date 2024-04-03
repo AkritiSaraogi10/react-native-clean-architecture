@@ -1,9 +1,8 @@
-import {useEffect, useState} from 'react';
-import {PermissionsAndroid, Platform} from 'react-native';
-import {BleManager, Characteristic, Device} from 'react-native-ble-plx';
-import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
+import { useEffect, useState } from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
+import { BleManager, Characteristic, Device } from 'react-native-ble-plx';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 import DeviceInfo from 'react-native-device-info';
-import {base64} from 'react-native-base64';
 type VoidCallback = (result: boolean) => void;
 
 const bleManager = new BleManager();
@@ -13,8 +12,19 @@ interface BluetoothLowEnergyApi {
   scanForDevices(): void;
   connectToDevice(device: Device): Promise<void>;
   allDevices: Device[];
+  connectedDeviceId: Device | null;
+  receivedData: string;
+  receivedError: string;
+  // receivedData: any[];
+  // receivedError: any[];
+
 }
 export default function useBLE(): BluetoothLowEnergyApi {
+  const [receivedData, setReceivedData] = useState<string>('');
+  const [receivedError, setReceivedError] = useState<string>('');
+  // const [receivedData, setReceivedData] = useState<any[]>([]);
+  // const [receivedError, setReceivedError] = useState<any[]>([]);
+  const [connectedDeviceId, setConnectedDeviceId] = useState<Device | null>(null);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [serviceID, setServiceID] = useState(
     '0c2ad08c-5065-49ed-a6e3-5a8a05cee69b',
@@ -46,11 +56,11 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
         const isGranted =
           result['android.permission.BLUETOOTH_CONNECT'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
+          PermissionsAndroid.RESULTS.GRANTED &&
           result['android.permission.BLUETOOTH_SCAN'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
+          PermissionsAndroid.RESULTS.GRANTED &&
           result['android.permission.ACCESS_FINE_LOCATION'] ===
-            PermissionsAndroid.RESULTS.GRANTED;
+          PermissionsAndroid.RESULTS.GRANTED;
 
         cb(isGranted);
       }
@@ -62,14 +72,14 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1;
 
-  //scxan device
+  //scan device
   const scanForDevices = async () => {
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log('Error in scanning devices:', error);
         return;
       }
-      if (device && device.name?.startsWith('Point-1-2D:9F')) {
+      if (device) {
         // a4d42b3e-d45b-42fe-9e65-05fd789dab75
         console.log(
           'Device serviceUUIDs:',
@@ -93,18 +103,19 @@ export default function useBLE(): BluetoothLowEnergyApi {
     try {
       await bleManager.connectToDevice(device.id);
       console.log(`Device ${device.id} connected successfully!`);
+      setConnectedDeviceId(device);
 
       //discovering all service and characteristics
       const discoverAllServicesAndCharacteristics =
         await device.discoverAllServicesAndCharacteristics();
-      console.log(
-        'Services and characteristics discovered',
-        discoverAllServicesAndCharacteristics,
-      );
-      const discoverAllServicesAndCharacteristicsForDevice =
-        await bleManager.discoverAllServicesAndCharacteristicsForDevice(
-          device.id,
-        );
+      // console.log(
+      //   'Services and characteristics discovered',
+      //   discoverAllServicesAndCharacteristics,
+      // );
+      // const discoverAllServicesAndCharacteristicsForDevice =
+      //   await bleManager.discoverAllServicesAndCharacteristicsForDevice(
+      //     device.id,
+      //   );
       // console.log('discoverAllServicesAndCharacteristicsForDevice',discoverAllServicesAndCharacteristicsForDevice);
 
       //checking device services
@@ -135,35 +146,41 @@ export default function useBLE(): BluetoothLowEnergyApi {
       }
 
       // read char for services
-      await readServices(device);
+      // await readServices(device);
     } catch (error) {
       console.log('ERROR-->', error);
     }
   };
 
-  const readServices = async (device: Device) => {
-    try {
-      const services = await device.services();
-      const characteristics = await services[1].characteristics();
-      console.log('Characteristics:', characteristics);
-      console.log('Services:', services);
-      for (const service of services) {
-        const characteristics = await device.characteristicsForService(
-          '0c2ad08c-5065-49ed-a6e3-5a8a05cee69b',
-        );
-        characteristics.forEach(characteristic => {
-          enableCharacteristicIndication(characteristic);
-          console.log('Characteristic UUID:', characteristic.uuid);
-          console.log('Characteristic Value:', characteristic.id);
-        });
-        break;
-      }
-    } catch (error) {
-      console.error('Error reading services:', error);
-    }
-  };
+  // const readServices = async (device: Device) => {
+  //   try {
+  //     const services = await device.services();
+  //     const characteristics = await services[1].characteristics();
+  //     console.log('Characteristics:', characteristics);
+  //     console.log('Services:', services);
+  //     for (const service of services) {
+  //       const characteristics = await device.characteristicsForService(
+  //         '0c2ad08c-5065-49ed-a6e3-5a8a05cee69b',
+  //       );
+  //       characteristics.forEach(characteristic => {
+  //         enableCharacteristicIndication(characteristic);
+  //         console.log('Characteristic UUID:', characteristic.uuid);
+  //         console.log('Characteristic Value:', characteristic.id);
+  //       });
+  //       break;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error reading services:', error);
+  //   }
+  // };
 
+  // const addReceivedData = (data: any) => {
+  //   setReceivedData(prevData => [...prevData, data]);
+  // };
 
+  // const addReceivedError = (error: any) => {
+  //   setReceivedError(prevErrors => [...prevErrors, error]);
+  // };
   const enableCharacteristicIndication = async (
     characteristic: Characteristic,
   ) => {
@@ -178,18 +195,22 @@ export default function useBLE(): BluetoothLowEnergyApi {
         characteristic.uuid,
         (error, characteristic) => {
           if (error) {
+            setReceivedError(error.message);
+            // addReceivedError(error);
             console.error('Error at receiving data from device', error);
             return;
           } else {
-   
-            // const decodedString = decoder.decode(characteristic.value);
-            const value =
-              (characteristic.value[0] << 8) | characteristic.value[1];
-            console.log(
-              'characteristic --> decodedString','unsigned integer:', value,
-              characteristic.value,
-        
-            );
+
+            // // const decodedString = decoder.decode(characteristic.value);
+            // const value =
+            //   (characteristic.value[0] << 8) | characteristic.value[1];
+            // console.log(
+            //   'characteristic --> decodedString', 'unsigned integer:', value,
+            //   characteristic.value,
+
+            // );
+            setReceivedData(characteristic?.value ?? "")
+            // addReceivedData(characteristic?.value);
             console.log('Characteristic indication enabled');
           }
         },
@@ -200,6 +221,9 @@ export default function useBLE(): BluetoothLowEnergyApi {
   };
 
   return {
+    receivedData,
+    connectedDeviceId,
+    receivedError,
     requestPermissions,
     scanForDevices,
     connectToDevice,

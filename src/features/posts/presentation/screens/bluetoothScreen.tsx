@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CustomBottomSheet } from '../../../../shared/presentation/components/custom_bottom_sheet';
+import React from 'react';
+import { View, Text, Button, FlatList } from 'react-native';
 import useBLE from '../../../../shared/presentation/hooks/useBLE';
 import Colors from '../../../../core/styles/app_colors';
 
-export const BluetoothScreen = () => {
-  const [visible, setVisible] = useState(false);
-  const { requestPermissions, scanForDevices, allDevices } = useBLE();
-
+const App = () => {
+  const { requestPermissions, scanForDevices,
+    connectedDeviceId,
+    receivedData,
+    receivedError } = useBLE();
 
   const scanForPeripherals = () => {
     requestPermissions(isGranted => {
@@ -19,35 +18,42 @@ export const BluetoothScreen = () => {
     });
   };
 
-
-  const closeSheet = () => {
-    setVisible(false);
-  };
-
-  const openSheet = () => {
-    scanForPeripherals();
-    setVisible(true);
-    console.log(allDevices);
-  };
-
-
   return (
-    <SafeAreaView>
-      <Text>Bluetooth Devices</Text>
-      <TouchableOpacity onPress={() => openSheet()} style={{ height: 20, margin: 20 }}>
-        <Text>Open Sheet</Text></TouchableOpacity>
-      <CustomBottomSheet
-        handleClose={closeSheet}
-        heightPercent={50}
-        isVisble={visible}
-        animationType="slide">
-        <View>
-          {
-            allDevices.map((device, index) => <View key={index} style={{ backgroundColor: 'blue' }}>
-              <Text style={{ color: Colors.white }}>{device.id} {device.name} {device.localName}</Text></View>)
-          }
+    <View style={{ padding: 20, backgroundColor: Colors.white }}>
+      <Button title="Scan And Connect" onPress={() => scanForPeripherals()} />
+      {connectedDeviceId && (
+        <View style={{ marginTop: 20 }}>
+          <Text>Connected Device ID: {connectedDeviceId.id} {connectedDeviceId.name}</Text>
         </View>
-      </CustomBottomSheet>
-    </SafeAreaView>
+      )}
+
+
+      {/* <FlatList
+        data={receivedData}
+        renderItem={({ item }) => <Text>{JSON.stringify(item)}</Text>}
+        keyExtractor={(item, index) => index.toString()}
+      />
+
+
+      <FlatList
+        data={receivedError}
+        renderItem={({ item }) => <Text>Error: {item.message}</Text>}
+        keyExtractor={(item, index) => index.toString()}
+      /> */}
+
+
+      {receivedError && (
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ color: 'red' }}> Error:{receivedError}</Text>
+        </View>
+      )}
+      {receivedData && (
+        <View style={{ marginTop: 20 }}>
+          <Text>Received Data: {receivedData}</Text>
+        </View>
+      )}
+    </View>
   );
 };
+
+export default App;
