@@ -1,83 +1,188 @@
-import { useState } from 'react';
-import { StyleSheet,Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CustomBottomSheet } from '../../../../shared/presentation/components/custom_bottom_sheet';
+import React, { useEffect, useState } from 'react';
+import { Button, StyleSheet, Text, View, Modal, TouchableOpacity, Alert } from 'react-native';
 import useBLE from '../../../../shared/presentation/hooks/useBLE';
 import Colors from '../../../../core/styles/app_colors';
+import { Device } from 'react-native-ble-plx';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 export const BluetoothScreen = () => {
-  const [visible, setVisible] = useState(false);
-  const { requestPermissions, scanForDevices, allDevices, deviceValue, deviceName } = useBLE();
+  const { requestPermissions,
+    scanForDevices,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    disconnectFromDevice,
+    scanningError,
+    scanning,
+    deviceName,
+    deviceValue,
+    BLTManager } = useBLE();
+
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+
+  useEffect(() => {
+    const subscription = BLTManager.onStateChange((state) => {
+      if (state === 'PoweredOff') {
+        Alert.alert(
+          '"App" would like to use Bluetooth.',
+          'This app uses Bluetooth to connect to and share information with your device.',
+          [
+            {
+              text: "Don't allow",
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: "Turn ON",
+              onPress: () => {
+                BLTManager.enable();
+              }
+            },
+          ]
+        );
+        subscription.remove();
+      }
+    }, true);
+    return () => {
+      subscription.remove();
+    };
+  }, [BLTManager]);
+
 
   const scanForPeripherals = () => {
     requestPermissions(isGranted => {
-      // console.log('isGranted--> ', isGranted);
       if (isGranted) {
         scanForDevices();
       }
     });
   };
 
+  const handleConnect = (device: Device) => {
+    if (connectedDevice && connectedDevice.id !== device.id) {
 
-  const closeSheet = () => {
-    setVisible(false);
+      Alert.alert(
+        'Error',
+        'Please disconnect from the currently connected device before connecting to a new one.',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed'),
+            style: 'cancel',
+          },
+        ]
+      );
+      return;
+    }
+
+    if (connectedDevice && connectedDevice.id === device.id) {
+      disconnectFromDevice(device);
+    } else {
+      connectToDevice(device);
+    }
   };
 
-  const openSheet = () => {
-    if(!visible)
-   { scanForPeripherals();
-    setVisible(true);
-    console.log(allDevices);
-  }
-  else
-  setVisible(false);
 
+  const toggleBottomSheet = () => {
+    setBottomSheetVisible(!bottomSheetVisible);
   };
 
+  const handleDeviceNamePress = (device: Device) => {
+    if (connectedDevice && connectedDevice.id === device.id) {
+      setBottomSheetVisible(true);
+    }
+  };
 
   return (
-    <SafeAreaView  style={styles.container}>
-      <TouchableOpacity onPress={() => openSheet()} style={{ height: 20, margin: 20 }}>
-        <Text>{!visible?"Scan Value":"Close Scan"}</Text>
-      </TouchableOpacity>
-      {visible ? <View style={{ height: 100, margin: 20 }} >
-        <Text style={styles.bigBlue}>Device Name </Text>
-        <Text style={styles.red}>{deviceName ? deviceName : "NA"} </Text>
+    <View style={{ padding: 20, backgroundColor: Colors.white }}>
+      {!allDevices.length && (
+        <Button title={scanning ? "SCANNING..." : "SCAN"} onPress={scanForPeripherals} disabled={scanning} />
+      )}
+      {scanningError && <Text style={styles.error}>{scanningError}</Text>}
+      <View style={styles.deviceList}>
+        {allDevices.map(device => (
+          <View key={device.id} style={styles.deviceItem}>
+            <TouchableOpacity onPress={() => handleDeviceNamePress(device)}>
+              <Text>{device.id}</Text>
+            </TouchableOpacity>
+            <Button
+              title={connectedDevice && connectedDevice.id === device.id ? 'Disconnect' : 'Connect'}
+              onPress={() => handleConnect(device)}
+            />
+          </View>
+        ))}
+      </View>
 
-        <Text style={styles.bigBlue}>Value</Text>
-        <Text style={styles.red}>{deviceValue ? deviceValue : "0"}</Text>
-
-      </View> : <Text>"none"</Text>}
-
-      {/* 
-      <CustomBottomSheet
-        handleClose={closeSheet}
-        heightPercent={50}
-        isVisble={visible}
-        animationType="slide">
-        <View>
-          {
-            allDevices.map((device, index) => <View key={index} style={{ backgroundColor: 'blue' }}>
-              <Text style={{ color: Colors.white }}>{device.id} {device.name} {device.localName}</Text></View>)
-          }
-        </View>
-      </CustomBottomSheet> */}
-    </SafeAreaView>
+      {connectedDevice && (
+        <Modal visible={bottomSheetVisible} animationType="slide" transparent={true} style={{ borderRadius: 10 }}>
+          <View style={styles.bottomSheetContainer}>
+            <View style={styles.bottomSheetHeader}>
+              <Text style={styles.bottomSheetTitle}>{connectedDevice.id} {connectedDevice.name}</Text>
+              <TouchableOpacity onPress={toggleBottomSheet}>
+                <Icon
+                  name="close"
+                  color={Colors.black}
+                  size={22} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bottomSheetContent}>
+              <Text style={styles.textstyle}>Device Name: {deviceName}</Text>
+              <Text style={styles.textstyle}>Device Value: {deviceValue}</Text>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: Colors.white,
   },
-  bigBlue: {
-    color: 'blue',
-    fontWeight: 'bold',
-    fontSize: 30,
+  deviceList: {
+    marginTop: 20,
   },
-  red: {
+  deviceItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  error: {
     color: 'red',
-    fontWeight: 'bold',
-    fontSize: 30,
+    marginTop: 10,
   },
+  bottomSheetContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    borderRadius: 10
+  },
+  bottomSheetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    padding: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20
+  },
+  closeIcon: {
+    fontSize: 20,
+  },
+  bottomSheetTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  bottomSheetContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    height: '60%',
+  },
+  textstyle: {
+    color: 'blue',
+    fontSize: 16
+  }
 });
+
+export default BluetoothScreen;

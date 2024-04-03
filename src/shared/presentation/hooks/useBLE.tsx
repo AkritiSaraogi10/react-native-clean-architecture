@@ -1,7 +1,7 @@
-import {useEffect, useState} from 'react';
-import {PermissionsAndroid, Platform} from 'react-native';
-import {BleManager, Characteristic, Device} from 'react-native-ble-plx';
-import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
+import { useState } from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
+import { BleManager, Characteristic, Device } from 'react-native-ble-plx';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
 import DeviceInfo from 'react-native-device-info';
 type VoidCallback = (result: boolean) => void;
 
@@ -14,6 +14,11 @@ interface BluetoothLowEnergyApi {
   allDevices: Device[];
   deviceValue: any;
   deviceName: any;
+  disconnectFromDevice(device: Device): void;
+  scanning: boolean;
+  connectedDevice: Device | null;
+  scanningError: string | null;
+  BLTManager: BleManager;
 }
 export default function useBLE(): BluetoothLowEnergyApi {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
@@ -22,6 +27,9 @@ export default function useBLE(): BluetoothLowEnergyApi {
   );
   const [deviceValue, setdeviceValue] = useState(0);
   const [deviceName, setdeviceName] = useState(0);
+  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [scanningError, setScanningError] = useState<string | null>(null);
+  const [scanning, setScanning] = useState(false);
 
 
   //request permission for android
@@ -50,11 +58,11 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
         const isGranted =
           result['android.permission.BLUETOOTH_CONNECT'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
+          PermissionsAndroid.RESULTS.GRANTED &&
           result['android.permission.BLUETOOTH_SCAN'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
+          PermissionsAndroid.RESULTS.GRANTED &&
           result['android.permission.ACCESS_FINE_LOCATION'] ===
-            PermissionsAndroid.RESULTS.GRANTED;
+          PermissionsAndroid.RESULTS.GRANTED;
 
         cb(isGranted);
       }
@@ -66,15 +74,18 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1;
 
-  //scxan device
+
   const scanForDevices = async () => {
+    setScanning(true);
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log('Error in scanning devices:', error);
+        setScanningError(error.message);
+        setScanning(false);
         return;
       }
-      if (device && device.name?.startsWith('Point-1-2D:9F')) {
-        // a4d42b3e-d45b-42fe-9e65-05fd789dab75
+      if (device) {
+        console.log(device);
         console.log(
           'Device serviceUUIDs:',
           device.discoverAllServicesAndCharacteristics(),
@@ -85,110 +96,78 @@ export default function useBLE(): BluetoothLowEnergyApi {
           }
           return prevState;
         });
-        connectToDevice(device);
         bleManager.stopDeviceScan();
+        setScanning(false);
       }
     });
   };
 
+
   //connect device
   const connectToDevice = async (device: Device) => {
     console.log('Connecting to:', device.id, device.name);
-    setdeviceName(device.name)
+    setdeviceName(device.name);
     try {
       await bleManager.connectToDevice(device.id);
       console.log(`Device ${device.id} connected successfully!`);
-
-      //discovering all service and characteristics
+      setConnectedDevice(device);
       const discoverAllServicesAndCharacteristics =
         await device.discoverAllServicesAndCharacteristics();
-      console.log(
-        'Services and characteristics discovered',
-        discoverAllServicesAndCharacteristics,
-      );
-      const discoverAllServicesAndCharacteristicsForDevice =
-        await bleManager.discoverAllServicesAndCharacteristicsForDevice(
-          device.id,
-        );
-      // console.log('discoverAllServicesAndCharacteristicsForDevice',discoverAllServicesAndCharacteristicsForDevice);
-
-      //checking device services
+      // console.log(
+      //   'Services and characteristics discovered',
+      //   discoverAllServicesAndCharacteristics,
+      // );
       const deviceServices = await bleManager.servicesForDevice(device.id);
-      // console.log(' deviceServices ',deviceServices);
-
       for (const service of deviceServices) {
         const characteristics = await bleManager.characteristicsForDevice(
           device.id,
           service.uuid,
         );
-        // console.log('service.uuid ', service.uuid);
-
-        // Read characteristics
         for (const characteristic of characteristics) {
           console.log('Characteristic Value for', characteristic.uuid);
           enableCharacteristicIndication(characteristic);
-          // await bleManager.readCharacteristicForDevice(
-          //   device.id,
-          //   service.uuid,
-          //   characteristic.uuid,
-          // );
-          // console.log(
-          //   ' for loopCharacteristic Value',
-          //   characteristic.uuid,
-          // );
+
         }
       }
-
-      // read char for services
-      await readServices(device);
     } catch (error) {
       console.log('ERROR-->', error);
     }
   };
 
-  const readServices = async (device: Device) => {
-    try {
-      const services = await device.services();
-      const characteristics = await services[1].characteristics();
-      console.log('Characteristics:', characteristics);
-      console.log('Services:', services);
-      for (const service of services) {
-        const characteristics = await device.characteristicsForService(
-          '0c2ad08c-5065-49ed-a6e3-5a8a05cee69b',
-        );
-        characteristics.forEach(characteristic => {
-          // enableCharacteristicIndication(characteristic);
-          console.log('Characteristic UUID:', characteristic.uuid);
-          console.log('Characteristic Value:', characteristic.id);
-        });
-        break;
+  const disconnectFromDevice = (device: Device) => {
+    if (connectedDevice) {
+      try {
+        bleManager.cancelDeviceConnection(device.id);
+        setConnectedDevice(null);
+        console.log('Device disconnected successfully.');
+      } catch (error) {
+        console.error('Error disconnecting from device:', error);
       }
-    } catch (error) {
-      console.error('Error reading services:', error);
+    } else {
+      console.warn('No connected device to disconnect.');
     }
   };
+
   const base64ToBinary = (base64String) => {
     const base64Chars =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  
     let binaryString = "";
     let padding = 0;
-  
     // Convert each character of the Base64 string to its corresponding 6-bit binary representation
     for (let i = 0; i < base64String.length; i++) {
       if (base64String[i] === "=") {
         padding++;
         continue;
       }
-      
+
       const charIndex = base64Chars.indexOf(base64String[i]);
       const binaryRepresentation = charIndex.toString(2).padStart(6, "0");
       binaryString += binaryRepresentation;
     }
-  
+
     // Remove the padding bits
     binaryString = binaryString.slice(0, -padding * 2);
-  
+
     // Convert the binary string to binary data (Uint8Array)
     const binaryData = new Uint8Array(binaryString.length / 8);
     for (let i = 0; i < binaryData.length; i++) {
@@ -197,10 +176,10 @@ export default function useBLE(): BluetoothLowEnergyApi {
         2
       );
     }
-  
+
     return binaryData;
   };
- 
+
   const enableCharacteristicIndication = async (
     characteristic: Characteristic,
   ) => {
@@ -218,24 +197,10 @@ export default function useBLE(): BluetoothLowEnergyApi {
             console.error('Error at receiving data from device', error);
             return;
           } else {
-            // const decodedString = decoder.decode(characteristic.value);
             const base64ToBinaryd = base64ToBinary(characteristic.value);
             const bytes = base64ToBinaryd;
             const value = bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
-            //
-         
-            //
-            
             setdeviceValue(value);
-            // console.log(
-            //   'characteristic --> value',
-            //   characteristic.value,
-            
-            //   "base64ToBinaryd",
-            //   base64ToBinaryd,
-            //   "valueddd",
-            //   value
-            // );
           }
         },
       );
@@ -250,6 +215,11 @@ export default function useBLE(): BluetoothLowEnergyApi {
     connectToDevice,
     allDevices,
     deviceValue,
-    deviceName
+    disconnectFromDevice,
+    scanningError,
+    connectedDevice,
+    deviceName,
+    scanning,
+    BLTManager: bleManager
   };
 }
