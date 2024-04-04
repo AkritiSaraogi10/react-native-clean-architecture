@@ -19,7 +19,6 @@ const usePostScreenData = () => {
 
   useEffect(() => {
     let posts: Results<PostSchema>;
-
     let listener = (
       collection: OrderedCollection<PostSchema>
     ) => {
@@ -53,8 +52,11 @@ const usePostScreenData = () => {
         return {...prev, [curr.key]: curr.value};
       },
       {
-        _id: new BSON.ObjectId(),
+        _id: new BSON.UUID(),
         userId: Math.random().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        authorId: 'A6B783D3952524CFD8E4F11701DF3363',
       },
     );
     const newPost1 = PostSchema.fromJSON(newPost);

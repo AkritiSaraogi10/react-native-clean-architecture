@@ -6,10 +6,13 @@ import { SCHEMA_NAMES } from '../../../utils/constants/constants';
 
 // Class definition for PostSchema representing a Realm object. (same as of API response)
 class PostSchema extends Realm.Object {
-  _id!: BSON.ObjectId;
+  _id!: BSON.UUID;
   title!: string;
   userId!: string;
   body!: string;
+  createdAt!: Date;  //name, age , id for author schema
+  updatedAt!: Date;
+  authorId!: string
   private static _realm: Realm;
 
   // Static schema definition for the PostSchema
@@ -17,10 +20,13 @@ class PostSchema extends Realm.Object {
     name: SCHEMA_NAMES.POST,
     primaryKey: '_id', // Primary key of the schema
     properties: {
-      _id: 'objectId',
+      _id: 'uuid',
       title: 'string',
       userId: 'string',
       body: 'string',
+      createdAt: 'date',
+      updatedAt: 'date',
+      authorId: 'string'
     },
   };
   /**
@@ -35,10 +41,13 @@ class PostSchema extends Realm.Object {
 
     // type casting as instantiating will create a record in db
     const obj: PostSchema = {
-      _id: new BSON.ObjectId(json._id), // must remove instantiation after proper db and api
+      _id: new BSON.UUID(json._id), // must remove instantiation after proper db and api
       title: json.title,
       userId: json.userId,
       body: json.body,
+      createdAt: json.createdAt ?? new Date().toISOString(),
+      updatedAt: json.updatedAt ?? new Date().toISOString(),
+      authorId: json.authorId
     } as PostSchema;
 
     return obj;

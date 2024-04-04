@@ -27,19 +27,20 @@ export class PostRepositoryImpl implements PostRepository {
       try {
         const result = await this.dataSource.getPosts(); // api call
         const posts = result.results.map((item: PostDto) => {
-          return PostSchema.fromJSON(item);
+          return PostSchema.fromJSON({...item, authorId: 'A6B783D3952524CFD8E4F11701DF3363',});
         });
 
         this.postService.addPosts(posts); // save to db
 
         const postFromDB = this.postService.getPosts(); // return to screen
+
         return postFromDB;
       } catch (e) {
         const postFromDB = this.postService.getPosts(); // return to screen
         return postFromDB;
       } 
      } catch (e) {
-      throw new ServerException('Unable to get data from API or Local DB', 500);
+      throw e;
     }
   }
 
@@ -58,8 +59,8 @@ export class PostRepositoryImpl implements PostRepository {
         const postFromDB = this.postService.getPost(); // return to screen
         return postFromDB;
       } 
-    } catch {
-      throw new ServerException('Unable to get data from API or Local DB', 500);
+    } catch(e) {
+      throw e
     }
   }
 
@@ -72,7 +73,7 @@ export class PostRepositoryImpl implements PostRepository {
       //}
       this.postService.addPost(postData);
     } catch (e) {
-      throw new ServerException('Unable to add data to API or Local DB', 500);
+      throw e
     } 
   }
 
@@ -85,7 +86,7 @@ export class PostRepositoryImpl implements PostRepository {
       //}
       this.postService.deletePost(postId);
     } catch (e) {
-      throw new ServerException('Unable to add data to API or Local DB', 500);
+      throw e
     } 
   }
 
@@ -98,7 +99,7 @@ export class PostRepositoryImpl implements PostRepository {
       //}
       this.postService.updatePost(postData);
     } catch (e) {
-      throw new ServerException('Unable to add data to API or Local DB', 500);
+      throw e
     } 
   }
 }

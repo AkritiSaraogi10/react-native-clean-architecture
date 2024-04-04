@@ -3,14 +3,14 @@ import {BSON} from 'realm';
 // Class representing a post DTO (Data Transfer Object)
 class PostDto {
   userId: string;
-  _id: BSON.ObjectId;
+  _id: BSON.UUID;
   title: string;
   body: string;
 
   // Constructor to initialize post properties
   constructor(userId: string, id: number, title: string, body: string) {
     this.userId = userId?.toString() ?? '';
-    this._id = new BSON.ObjectId(id);
+    this._id = new BSON.UUID(id?.toString());
     this.title = title;
     this.body = body;
   }

@@ -4,14 +4,19 @@ import Realm from 'realm';
 import {injectable, singleton} from 'tsyringe';
 import Database from './Database';
 import { ServerException } from '../../errors/server_exceptions';
+import { SCHEMA_NAMES, prefsKeys } from '../../utils/constants/constants';
+import AxiosOperations from '../../network/axios/axios_operations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 @singleton()
 @injectable()
 class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
   private realm!: Realm;
+  private axios: AxiosOperations;
 
-  constructor(realmDb: Database) {
+  constructor(realmDb: Database, axios: AxiosOperations) {
     this.realm = realmDb.realmInstance;
+    this.axios = axios;
   }
   public get realmInstance() {
     return this.realm;
@@ -23,7 +28,8 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
         this.realm.create<T>(schemaName, objectData);
       });
     } catch (e) {
-      throw new ServerException(`Unable to add ${schemaName} to offline DB`)
+      console.log('realm ------------..........', e)
+      throw new ServerException(`Unable to add ${schemaName} to offline DB ${e}`)
     }
   }
 
@@ -35,7 +41,8 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
         });
       });
     } catch (e) {
-      throw new ServerException(`Unable to add ${schemaName} to offline DB`)
+      console.log('realm 44------------..........', e)
+      throw new ServerException(`Unable to add ${schemaName} to offline DB ${e}`)
     }
   }
 
@@ -45,7 +52,7 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
         this.realm.create<T>(schemaName, objectData, UpdateMode.Modified);
       });
     } catch (e) {
-      throw new ServerException(`Unable to update ${schemaName} to offline DB`)
+      throw new ServerException(`Unable to update ${schemaName} to offline DB ${e}`)
     }
   }
 
@@ -53,7 +60,7 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
     const objectType = this.realm.objects<T>(schemaName);
     const objectToDelete = objectType.filtered(
       '_id = $0',
-      new BSON.ObjectId(objectId),
+      new BSON.UUID(objectId),
     );
 
     try {
@@ -61,7 +68,7 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
         this.realm.delete(objectToDelete);
       });
     } catch (e) {
-      throw new ServerException(`Unable to delete ${schemaName} from offline DB`)
+      throw new ServerException(`Unable to delete ${schemaName} from offline DB ${e}`)
     } 
   }
 
@@ -70,7 +77,7 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
       const posts = this.realm.objects<T>(schemaName) as unknown as Results<T>;
       return posts;
     } catch (e) {
-      throw new ServerException(`Unable to fetch ${schemaName} from offline DB`)
+      throw new ServerException(`Unable to fetch ${schemaName} from offline DB ${e}`)
     }
   }
 
@@ -79,8 +86,30 @@ class RealmService<T extends Realm.Object> implements RealmServiceInterface<T> {
       const posts = this.realm.objects<T>(schemaName) as unknown as Results<T>;
       return posts;
     } catch (e) {
-      throw new ServerException(`Unable to fetch ${schemaName} from offline DB`)
+      throw new ServerException(`Unable to fetch ${schemaName} from offline DB ${e}`)
     }
+  }
+
+  serverDataSync = async () => {
+    let body: {[key: string]: any[]} = {};
+
+    let last_sync_date = await AsyncStorage.getItem(prefsKeys.SYNC_TIME);
+    console.log(last_sync_date);
+
+    for (let schemaName of Object.values(SCHEMA_NAMES)) {
+      const data = this.realm.objects<T>(schemaName) as unknown as Results<any>;
+      const changedData = data.filter((v)=>{
+        return !last_sync_date ?  true : 
+          v.createdAt > last_sync_date || v.updatedAt > last_sync_date
+      })
+      console.log(changedData);
+      body[schemaName] = changedData;
+    }
+    console.log('SYNC BODY:  ', body)
+    //Axios post call
+
+    //await AsyncStorage.setItem(prefsKeys.SYNC_TIME, new Date().toISOString());
+
   }
 }
 
