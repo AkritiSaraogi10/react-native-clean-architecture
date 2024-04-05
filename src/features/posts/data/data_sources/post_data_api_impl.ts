@@ -33,7 +33,7 @@ class PostDataApiImpl implements PostDataSource {
     }
   }
 
-  async updatePost(p: PostSchema): Promise<ApiResponse<PostDto>> {
+  async updatePost(p: Partial<PostSchema>): Promise<ApiResponse<PostDto>> {
     try {
       const res = await this.axiosOperations.put(
         `http://10.0.2.2:4000/update-post/${p._id}`,
