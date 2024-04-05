@@ -17,7 +17,7 @@ export default function PostScreen() {
     handleEditChange,
   } = usePostScreenData(); // custom hooks
 
-  const renderItem = (item: PostSchema, index: number) => {
+  const renderItem = (item: PostSchema) => {
     return (
       <View key={item?._id?.toString()}>
         <View
@@ -32,7 +32,10 @@ export default function PostScreen() {
           }}>
           <Text style={{flexBasis: '70%'}}>{item.title}</Text>
 
-          <Button title="Edit" onPress={() => handleEditOpen(index)} />
+          <Button
+            title="Edit"
+            onPress={() => handleEditOpen(item._id.toString())}
+          />
 
           <Button
             title="Delete"
@@ -40,11 +43,15 @@ export default function PostScreen() {
           />
         </View>
 
-        {isEdit === index && (
+        {isEdit === item._id.toString() && (
           <View>
             <TextInput
               style={{marginBottom: 10, padding: 10, borderBottomWidth: 1}}
-              value={editedPosts[index]?.title}
+              value={
+                editedPosts.filter(
+                  e => e._id.toString() === item._id.toString(),
+                )[0]?.title
+              }
               onChangeText={text =>
                 handleEditChange(item._id.toString(), {title: text})
               }
@@ -80,7 +87,7 @@ export default function PostScreen() {
       <FlatList
         data={posts}
         renderItem={p => {
-          return renderItem(p.item, p.index);
+          return renderItem(p.item);
         }}
         style={{padding: 10}}
       />

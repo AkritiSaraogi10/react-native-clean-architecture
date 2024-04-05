@@ -47,6 +47,7 @@ class AxiosOperations implements IAxiosOperations {
         throw new ServerException('Unknown Error', response.status);
       }
     } catch (error) {
+      console.log('Axios Error :: ', error);
       if (error instanceof ServerException) {
         // If it's a custom exception, rethrow it
         throw error;

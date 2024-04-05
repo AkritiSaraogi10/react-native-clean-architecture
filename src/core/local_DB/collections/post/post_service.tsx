@@ -2,7 +2,7 @@ import {Results} from 'realm';
 import RealmService from '../../core/realm_service';
 import PostSchema from './post_schema';
 import {injectable} from 'tsyringe';
-import { SCHEMA_NAMES } from '../../../utils/constants/constants';
+import {SCHEMA_NAMES} from '../../../utils/constants/constants';
 
 @injectable()
 class PostService {
@@ -37,9 +37,7 @@ class PostService {
   }
 
   async getPost(): Promise<Results<PostSchema>> {
-    const data = this.realmService.fetchObjectFromRealm(
-      PostSchema.schema.name,
-    );
+    const data = this.realmService.fetchObjectFromRealm(PostSchema.schema.name);
 
     return data;
   }

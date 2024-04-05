@@ -15,14 +15,12 @@ const usePostScreenData = () => {
   const internet = useSelector((state: any) => state.internet.isConnected);
 
   const [formFields, setFormFields] = useState<IFields[]>(initialState);
-  const [editIndex, setEditIndex] = useState(NaN);
+  const [editIndex, setEditIndex] = useState<string | null>(null);
 
   useEffect(() => {
     let posts: Results<PostSchema>;
-    let listener = (
-      collection: OrderedCollection<PostSchema>
-    ) => {
-      setPosts(Array.from(collection));
+    let listener = (collection: OrderedCollection<PostSchema>) => {
+      setPosts(Array.from(collection.sorted('createdAt', true)));
       setEditedPosts(Array.from(collection));
     };
 
@@ -67,8 +65,8 @@ const usePostScreenData = () => {
     }
   };
 
-  const handleEditOpen = (index: number) => {
-    setEditIndex(index === editIndex ? NaN : index);
+  const handleEditOpen = (id: string) => {
+    setEditIndex(id === editIndex ? null : id);
   };
 
   const handleEditChange = (id: string, changes: any) => {
@@ -81,9 +79,12 @@ const usePostScreenData = () => {
 
   const handleEditSave = (id: string) => {
     const postChanged = editedPosts.filter(p => p._id.toString() === id)[0];
+    postChanged.updatedAt = new Date();
     try {
-      postUseCase.updatePost(postChanged as PostSchema);
-      setEditIndex(NaN);
+      postUseCase.updatePost({
+        ...postChanged,
+      } as PostSchema);
+      setEditIndex(null);
     } catch (error: any) {
       console.log(error.message, error.errorCode);
     }
@@ -91,7 +92,7 @@ const usePostScreenData = () => {
 
   const handleDeletePost = (id: string) => {
     try {
-      postUseCase.deletePost(id ?? '')
+      postUseCase.deletePost(id ?? '');
     } catch (error: any) {
       console.log(error.message, error.errorCode);
     }
