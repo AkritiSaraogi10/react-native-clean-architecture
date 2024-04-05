@@ -82,9 +82,11 @@ export class PostRepositoryImpl implements PostRepository {
       //if (internet) {
       //this.dataSource.deletePost();
       //}
-      this.postService.deletePost(postId);
+      await this.dataSource.deletePost(postId);
     } catch (e) {
       throw e;
+    } finally {
+      this.postService.deletePost(postId);
     }
   }
 
@@ -94,9 +96,11 @@ export class PostRepositoryImpl implements PostRepository {
       //if (internet) {
       //this.dataSource.updatePost();
       //}
-      this.postService.updatePost(postData);
+      await this.dataSource.updatePost(postData);
     } catch (e) {
       throw e;
+    } finally {
+      this.postService.updatePost(postData);
     }
   }
 }

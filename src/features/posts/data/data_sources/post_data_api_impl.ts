@@ -33,6 +33,39 @@ class PostDataApiImpl implements PostDataSource {
     }
   }
 
+  async updatePost(p: PostSchema): Promise<ApiResponse<PostDto>> {
+    try {
+      const res = await this.axiosOperations.put(
+        `http://10.0.2.2:4000/update-post/${p._id}`,
+        {
+          post: p,
+        },
+      );
+      return ApiResponse.fromJson<PostDto, PostDto>(
+        res.data,
+        PostDto.fromJson,
+        {isList: false},
+      );
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  async deletePost(id: string): Promise<ApiResponse<PostDto>> {
+    try {
+      const res = await this.axiosOperations.delete(`http://10.0.2.2:4000/delete-post/${id}`);
+      return ApiResponse.fromJson<PostDto, PostDto>(
+        res.data,
+        PostDto.fromJson,
+        {isList: false},
+      );
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   async getPosts(): Promise<ApiResponse<PostDto[]>> {
     try {
       const results: AxiosResponse<any> = await this.axiosOperations.get(

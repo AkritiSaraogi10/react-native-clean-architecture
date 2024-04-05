@@ -6,4 +6,6 @@ export interface PostDataSource {
   getPosts(): Promise<ApiResponse<PostDto[]>>;
   getPost(): Promise<ApiResponse<PostDto>>;
   addPost(p: PostSchema): Promise<ApiResponse<PostDto>>;
+  updatePost(p: Partial<PostSchema>): Promise<ApiResponse<PostDto>>;
+  deletePost(id: string): Promise<ApiResponse<PostDto>>; 
 }
