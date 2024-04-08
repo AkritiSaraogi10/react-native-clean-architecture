@@ -13,6 +13,8 @@ import {
 import {RootState} from './shared/presentation/redux/store';
 import RealmService from './core/local_DB/core/realm_service';
 import { container } from 'tsyringe';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { prefsKeys } from './core/utils/constants/constants';
 
 const rs = container.resolve(RealmService);
 
@@ -53,6 +55,30 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [syncDateTime, setSyncDateTime] = useState({ date: '', time: '' });
+
+  const sync_date_time = async () => {
+    const isoDateString = await AsyncStorage.getItem(prefsKeys.SYNC_TIME);
+
+    if (isoDateString) {
+        const date = new Date(isoDateString);
+
+        // Format date as "DD/MM/YYYY"
+        const formattedDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+
+        // Format time as "HH:MM AM/PM"
+        let hours = date.getHours();
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (0 hours)
+        const formattedTime = `${hours}:${minutes} ${ampm}`;
+        setSyncDateTime({
+          date: formattedDate, time: formattedTime
+        })
+    }
+}
+
   return (
     <SafeAreaProvider style={backgroundStyle}>
       {isLoggedIn ? 
@@ -73,7 +99,7 @@ function App(): React.JSX.Element {
         >
         {isConnectedCheck ? ' Online' : 'Offline'}
         </Snackbar>
-        <Button onPress={() => rs.serverDataSync()}>Sync</Button>
+        <Button onPress={() => { sync_date_time(); rs.serverDataSync()}}>{syncDateTime.date && syncDateTime.time !== '' ? `SYNC   ${syncDateTime.date} - ${syncDateTime.time}` : 'SYNC'}</Button>
         <PostScreen />
       </> : 
         <ActivityIndicator size={'large'} />
